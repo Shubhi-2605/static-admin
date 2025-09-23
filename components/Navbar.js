@@ -32,7 +32,7 @@ export default function Navbar() {
         </li>
 
         {/* Promotions Dropdown */}
-        <li className="relative" onMouseLeave={handleMouseLeave}>
+        <li className="relative" >
           <button
             onClick={() => setPromotionOpen(!isPromotionOpen)}
             className="hover:text-blue-500 focus:outline-none"
@@ -40,7 +40,13 @@ export default function Navbar() {
             Promotions ▼
           </button>
           {isPromotionOpen && (
-            <ul className="absolute mt-2 bg-white border rounded shadow-lg w-64 z-50">
+            <ul className="absolute mt-2 bg-white border rounded shadow-lg w-64 z-50"
+            onMouseEnter={()=> setPromotionOpen(true)}
+            onMouseLeave={()=> setPromotionOpen(false)}
+
+            
+            
+            >
               <li><Link href="/promotions" className="block px-4 py-2 hover:bg-gray-100">Promotions</Link></li>
               <li><Link href="/promotions" className="block px-4 py-2 hover:bg-gray-100">Coupons</Link></li>
               <li><Link href="/newofferzone" className="block px-4 py-2 hover:bg-gray-100">New Offer Zone</Link></li>

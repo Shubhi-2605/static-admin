@@ -45,20 +45,23 @@ export default function PromotionTable() {
   ];
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Promotion List</h2>
 
-      <div className="flex flex-col space-y-4">
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="bg-gray-200 px-6 py-4 rounded-t-lg mb-6">
+        <h1 className="text-2xl font-bold text-gray-400">Promotion List</h1>
+      </div>
+<div className="bg-white shadow  border border-gray-300 p-6">
+    <div className="flex flex-col space-y-4 mb-4 border-b border-gray-200 pb-4">
         <input
           type="text"
           placeholder="Promotion Title"
-          className="border rounded px-4 py-2 "
+          className="border border-gray-300 p-2 px-4 py-2 "
         />
-        <div className="flex justify-end space-x-2">
-          <button className="bg-white text-gray-800 px-4 py-2 rounded hover:bg-blue-700">
+        <div className="flex justify-end space-x-2 mb-6">
+          <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-blue-700">
             + New Promotion
           </button>
-          <button className="bg-white text-gray-800 px-4 py-2 rounded hover:bg-red-600">
+          <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-red-600">
             Search
           </button>
 
@@ -151,6 +154,7 @@ export default function PromotionTable() {
 
 
       </table>
+    </div>
     </div>
   );
   

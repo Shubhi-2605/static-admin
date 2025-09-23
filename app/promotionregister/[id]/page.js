@@ -3,10 +3,24 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import{Percent,Tag,Gift} from "lucide-react";
+ import{useRouter} from "next/navigation";
+
 
 export default function PromotionEditPage() {
   const { id } = useParams();
   const [promotion, setPromotion] = useState(null);
+const router = useRouter();
+
+
+const handleCancel = () => {
+  router.push("/promotions"); // 
+}
+
+
+
+
+
+
 
   useEffect(() => {
     const fakePromotion = {
@@ -336,6 +350,7 @@ export default function PromotionEditPage() {
 
         <button
           type="button"
+          onClick={handleCancel}
           className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600"
         >
           Cancel
