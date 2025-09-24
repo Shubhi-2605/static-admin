@@ -3,11 +3,43 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import{ LockClosedIcon ,TrashIcon,PencilIcon} from '@heroicons/react/24/solid';
+import { useFormData } from '@/context/FormContext';
+
+
 
 export default function Navbar() {
   const [isPromotionOpen, setPromotionOpen] = useState(false);
   const [isFeedbackOpen, setFeedbackOpen] = useState(false);
   const [isControlOpen, setControlOpen] = useState(false);
+const{setProductHoverData} = useFormData();
+  
+   // <-- fake data to show on hover — replace with real API later
+   const fakeData = {
+    promotionType: "By Category",
+    title: "Pooja Essentials",
+    description: "Pooja Essentials 🪔",
+    productRow: "row1",
+    productRowTitle: "Pooja Essentials",
+    productRowDescription: "Best of pooja items for rituals",
+    startDate: "23-09-2025", // add this
+    endDate: "30-09-2025",
+    
+    category: "POOJA ITEMS",
+    branch: ["BARSHA SOUTH", "BUSINESS BAY"],
+    showOnScreen: { productRow: true },
+
+
+    imageUrl: "/images/fake-pooja.jpg" // optional preview url
+  };
+
+  const handleMouseEnterProducts = () => {
+    setProductHoverData(fakeData);
+  };
+
+  const handleMouseLeaveProducts = () => {
+    setProductHoverData(fakeData);
+  };
+
 
   const handleMouseLeave = () => {
     setPromotionOpen(false);
@@ -26,10 +58,15 @@ export default function Navbar() {
           <Link href="/order" className="hover:text-blue-500">Order</Link>
         </li>
 
-        {/* Products */}
-        <li>
-          <Link href="/products" className="hover:text-blue-500">Products</Link>
+      {/* Products - now reacts to hover */}
+      <li
+          onMouseEnter={handleMouseEnterProducts}
+          onMouseLeave={handleMouseLeaveProducts}
+          className="cursor-pointer"
+        >
+          <Link href="/offerregister" className="hover:text-blue-500">Products</Link>
         </li>
+
 
         {/* Promotions Dropdown */}
         <li className="relative" >

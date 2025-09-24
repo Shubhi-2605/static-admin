@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { UploadIcon,CrossIcon,X } from 'lucide-react';
 
 
 export default function BranchInfo() {
@@ -63,6 +64,10 @@ export default function BranchInfo() {
     ],
   };
 
+  const [branchTouched, setBranchTouched] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+  
+  const [errors, setErrors] = useState({});
 
   const [isStoreOpen, setIsStoreOpen] = useState(true);
   const[branchData,setBranchData] = useState('')
@@ -124,124 +129,246 @@ export default function BranchInfo() {
 
   const inputClass = 'border border-gray-300 rounded px-3 py-2 w-full text-sm';
 
+
+  const validateFields = () => {
+    const newErrors = {};
+  
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    if (!formData.address.trim()) newErrors.address = 'Address is required';
+    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+    if (!formData.whatsapp.trim()) newErrors.whatsapp = 'WhatsApp number is required';
+    if (!formData.lat.trim()) newErrors.lat = 'Latitude is required';
+    if (!formData.lng.trim()) newErrors.lng = 'Longitude is required';
+  
+    setErrors(newErrors);
+  
+    return Object.keys(newErrors).length === 0;
+  };
+  
+
+
+
+
+
   return (
-    <div className="flex gap-6 p-6">
+<>
+{/* Top Heading */}
+<div className="bg-gray-100 px-6 py-4 text-lg font-semibold text-gray-800">
+
+
+<div className="bg-gray-100 px-6 py-4 flex items-center justify-between">
+  <h2 className="text-lg font-semibold text-gray-800">Branch Info</h2>
+  <button
+    className="bg-gray-300 text-gray-500 px-4 py-2 rounded hover:bg-blue-700 text-sm"
+    onClick={() => {
+      // Your add branch logic here
+      alert('Add branch clicked');
+    }}
+  >
+    +Add Branch
+  </button>
+</div>
+
+
+
+<div className="bg-white mt-10 p-6">
+    <div className="flex gap-6 p-6 ">
       {/* Left Side */}
       <div className="w-1/2 bg-white p-6 rounded shadow">
-        <h2 className="text-xl font-semibold mb-4">Branch Info</h2>
 
         {/* Dropdown */}
-        <div className="mb-4">
-          <label className="block mb-1 text-sm font-medium">Branch</label>
-          <select
-            className={inputClass}
-            value={selectedBranchId}
-            onChange={handleBranchChange}
-          >
-            <option value="">-- Select Branch --</option>
-            {branches.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name}
-              </option>
-            ))}
-          </select>
-        </div>
+{/* Unified “Branch” dropdown inside a single box */}
+<div className="mb-4">
+  <div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${
+    branchTouched && !selectedBranchId ? 'border-red-500' : 'border-gray-100'
+  } relative`}>
+    <label className="text-xl font-bold block mb-1">Branch
+      <span className="text-red-500">*</span>
+    </label>
+    <select
+      className="w-full text-gray-500 focus:outline-none"
+      value={selectedBranchId}
+      onChange={(e) => {
+        setSelectedBranchId(e.target.value);
+        setBranchTouched(true); // Mark touched on change
+        handleBranchChange(e);
+      }}
+      onBlur={() => setBranchTouched(true)} // Mark touched on blur
+    >
+      <option value="">Please Enter the store...</option>
+      {branches.map((b) => (
+        <option key={b.id} value={b.id}>
+          {b.name}
+        </option>
+      ))}
+    </select>
+    {/* Red asterisk on error */}
+    {branchTouched && !selectedBranchId && (
+      <span className="absolute right-3 top-8 text-red-500 font-bold pointer-events-none">*</span>
+    )}
+  </div>
+</div>
+
+
+
+
 
         {/* Form Fields */}
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              type="email"
-              value={formData.email}
-              className={inputClass}
-              placeholder="Enter email"
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Address</label>
-            <input
-              type="text"
-              value={formData.address}
-              className={inputClass}
-              placeholder="Enter address"
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Phone</label>
-            <input
-              type="text"
-              value={formData.phone}
-              className={inputClass}
-              placeholder="Enter phone"
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">WhatsApp</label>
-            <input
-              type="text"
-              value={formData.whatsapp}
-              className={inputClass}
-              placeholder="Enter WhatsApp"
-              onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-            />
-          </div>
 
-          <div className="flex items-center gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Store Lat</label>
-            <input
-              type="text"
-              value={formData.lat}
-              className={inputClass}
-              placeholder="Enter Latitude"
-              onChange={(e) => setFormData({ ...formData, lat: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Store Lng</label>
-            <input
-              type="text"
-              value={formData.lng}
-              className={inputClass}
-              placeholder="Enter Longitude"
-              onChange={(e) => setFormData({ ...formData, lng: e.target.value })}
-            />
-          </div>
 
-{/* Store Open Toggle */}
- <div className="mb-4 flex items-center gap-2">
-              <label className="text-sm font-medium">Is Store Open</label>
-              <input
-                type="checkbox"
-                checked={isStoreOpen}
-                onChange={() => setIsStoreOpen(!isStoreOpen)}
-                className="h-4 w-4"
-              />
-            </div>
-            </div>
+
+
+        <div className="mb-4">
+  <div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.email ? 'border-red-500' : 'border-gray-100'} relative`}>
+    <label className="text-xl font-bold block mb-1">
+      Email <span className="text-red-500">*</span>
+    </label>
+    <input
+      type="email"
+      value={formData.email}
+      className="w-full text-gray-900 focus:outline-none"
+      placeholder="Enter your email"
+      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+    />
+    {errors.email && <span className="text-red-500 text-xs absolute -bottom-4">{errors.email}</span>}
+  </div>
+</div>
+
+<div className="mb-4">
+<div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.address ? 'border-red-500' : 'border-gray-100'} relative`}>
+
+    <label className="text-xl text-gray-900 block mb-1">Address
+      <span className="text-red-500">*</span>
+    </label>
+    <input
+      type="text"
+      value={formData.address}
+      className="w-full text-sm focus:outline-none"
+      placeholder="Enter address"
+      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+    />
+    {errors.adress && <span className="text-red-500 text-xs absolute -bottom-4">{errors.adress}</span>}
+
+    
+  </div>
+</div>
+
+<div className="mb-4">
+<div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.phone ? 'border-red-500' : 'border-gray-100'} relative`}>
+
+    <label className="text-xl font-bold block mb-1">Phone<span className="text-red-500">*</span></label>
+    <input
+      type="text"
+      value={formData.phone}
+      className="w-full text-gray-900 focus:outline-none"
+      placeholder="Enter phone"
+      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+    />
+        {errors.phone && <span className="text-red-500 text-xs absolute -bottom-4">{errors.phone}</span>}
+
+  </div>
+</div>
+
+<div className="mb-4">
+<div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.whatsapp ? 'border-red-500' : 'border-gray-100'} relative`}>
+
+    <label className="text-xl font-bold block mb-1">WhatsApp
+      <span className="text-red-500">*</span>
+    </label>
+    <input
+      type="text"
+      value={formData.whatsapp}
+      className="w-full text-gray-900 focus:outline-none"
+      placeholder="Enter WhatsApp"
+      onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+
+    />
+        {errors.whatsapp && <span className="text-red-500 text-xs absolute -bottom-4">{errors.whatsapp}</span>}
+
+  </div>
+</div>
+
+<div className="flex gap-4 mb-4">
+  {/* Store Lat */}
+  <div className="w-1/2">
+  <div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.lat ? 'border-red-500' : 'border-gray-100'} relative`}>
+
+      <label className="text-xl font-bold block mb-1">Store Lat<span className="text-red-500">*</span></label>
+      <input
+        type="text"
+        value={formData.lat}
+        className="w-full text-gray-900 focus:outline-none"
+        placeholder="Enter Latitude"
+        onChange={(e) => setFormData({ ...formData, lat: e.target.value })}
+      />
+              {errors.lat && <span className="text-red-500 text-xs absolute -bottom-4">{errors.lat}</span>}
+
+    </div>
+  </div>
+
+  {/* Store Lng */}
+  <div className="w-1/2">
+  <div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.lng ? 'border-red-500' : 'border-gray-100'} relative`}>
+
+      <label className="text-xl font-bold block mb-1">Store Lng<span className="text-red-500">*</span></label>
+      <input
+        type="text"
+        value={formData.lng}
+        className="w-full text-gray-900 focus:outline-none"
+        placeholder="Enter Longitude"
+        onChange={(e) => setFormData({ ...formData, lng: e.target.value })}
+      />
+              {errors.lng && <span className="text-red-500 text-xs absolute -bottom-4">{errors.lng}</span>}
+
+    </div>
+  </div>
+</div>
+
           
 <br/>
-          <div>
-            <label className="block text-sm font-medium mb-1">Image</label>
-            <input
-              type="file"
-              value={formData.imageUrl}
-              className={inputClass}
-              placeholder=""
-              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-            />
-          </div>
-          <br/>
+
+
+<div className="col-span-2">
+  <div className="border border-gray-100 shadow-sm px-3 pt-2 pb-2 w-full text-sm">
+    <label className="text-xl font-bold  mb-1">Image</label>
+
+    <div className="flex items-center justify-between">
+      {/* File input */}
+      <input
+        type="file"
+        accept="image/*"
+        className="text-sm text-gray-900 focus:outline-none"
+        onChange={(e) =>
+          setFormData({ ...formData, imageUrl: e.target.files[0] })
+        }
+      />
+
+      {/* Icons */}
+      <div className="flex gap-2">
+        {/* Upload Arrow */}
+        <span className="text-gray-500 cursor-pointer"><UploadIcon className="h-5 w-5"/></span>
+
+        {/* Cross (Clear) */}
+        <span
+          className="text-gray-500 cursor-pointer"
+          onClick={() => setFormData({ ...formData, imageUrl: '' })}
+        >
+          <X className="h-5 w-5"/>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+ 
 
 
 
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Delivery Start</label>
+<div className="mb-4">
+          <div className="border border-gray-100 shadow-sm px-2 pt-2 pb-1">
+            <label className="text-xl font-bold mb-1">Delivery Start</label>
             <input
               type="time"
               value={formData.deliveryStart}
@@ -251,8 +378,12 @@ export default function BranchInfo() {
               }
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Delivery End</label>
+          </div>
+
+
+          <div className="mb-4">
+            <div className="border border-gray-300 shadow-sm px-3 pt-2 pb-1  w-full text-sm ">
+            <label className="text-xl font-bold mb-1">Delivery End</label>
             <input
               type="time"
               value={formData.deliveryEnd}
@@ -261,16 +392,32 @@ export default function BranchInfo() {
                 setFormData({ ...formData, deliveryEnd: e.target.value })
               }
             />
+            </div>
           </div>
+
+
+
         </div>
 
         {/* Buttons */}
         <div className="flex gap-4">
 
 
-        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            Update
-          </button>
+        <button
+  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+  onClick={(e) => {
+    e.preventDefault();
+    if (validateFields()) {
+      // Submit logic goes here
+      alert("Form is valid and ready to submit!");
+    }
+  }}
+>
+  Update
+</button>
+
+
+
           <button className="px-4 py-2 bg-red-500 rounded hover:bg-gray-400">Cancel</button>
         </div>
       </div>
@@ -294,7 +441,7 @@ export default function BranchInfo() {
 
         {polygonList.length > 0 ? (
           polygonList.map((poly, index) => (
-            <div key={index} className="mb-4 border rounded p-4">
+            <div key={index} className="mb-4 border border-gray-100 shadow-sm p-4">
               <h3 className="font-semibold text-lg mb-2">{poly.area}</h3>
               <p><strong>Free Delivery Amount:</strong> {poly.freeDelivery}</p>
               <p><strong>Minimum Amount Of Order:</strong> {poly.minOrder}</p>
@@ -317,6 +464,11 @@ export default function BranchInfo() {
           <p className="text-gray-500">No polygon data. Please select a branch.</p>
         )}
       </div>
-    </div>
+      </div>
+  </div>
+</div>
+
+    </>
+   
   );
 }

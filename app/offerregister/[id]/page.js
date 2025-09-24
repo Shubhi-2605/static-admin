@@ -3,29 +3,72 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import NavbarWithProducts from "@/components/NavbarWithProductPreview";
+import NavbarWithProducts from "@/components/NavbarWithProductPreview"; // keep if you use it
+import { useFormData } from "@/context/FormContext";
 
-export default function offerEditPage() {
-  const { id } = useParams();
+export default function OfferEditPage() {
+  const { id } = useParams?.() ?? {}; // optional
   const router = useRouter();
 
+  // local controlled form state (your existing fields)
   const [formData, setFormData] = useState({
-    promotionType: "",
-    title: "",
-    description: "",
-    productRow: "",
+    promotionType: '',
+    title: '',
+    description: '',
+    productRow: '',
     sendNotification: false,
-    branch: "",
-    startDate: "",
-    endDate: "",
+    branch: '',
+    startDate: '',
+    endDate: '',
     showOnScreen: {
       home: false,
       productRow: false,
       searchPage: false,
-    },
+    }
   });
 
-  // Generic input handler
+  // context (source of hover data)
+  const { productHoverData } = useFormData();
+
+  // when the navbar hover data changes, merge it into local form
+  useEffect(() => {
+    if (productHoverData) {
+      setFormData((prev) => ({
+        ...prev,
+        promotionType: productHoverData.promotionType ?? prev.promotionType,
+        title: productHoverData.title ?? prev.title,
+        description: productHoverData.description ?? prev.description,
+        productRow: productHoverData.productRow ?? prev.productRow,
+        branch: Array.isArray(productHoverData.branch) ? productHoverData.branch.join(', ') : productHoverData.branch ?? prev.branch,
+        startDate: productHoverData.startDate ?? prev.startDate,
+        endDate: productHoverData.endDate ?? prev.endDate,
+      
+      
+        showOnScreen: {
+          ...prev.showOnScreen,
+          productRow: productHoverData.showOnScreen?.productRow ?? prev.showOnScreen.productRow,
+        },
+      }));
+    } else {
+      // clear back to defaults when hover leaves (optional)
+      setFormData((prev) => ({
+        ...prev,
+        promotionType: '',
+        title: '',
+        description: '',
+        productRow: '',
+        startDate:'',
+        endDate:'',
+        showOnScreen: {
+          home: false,
+          productRow: false,
+          searchPage: false,
+        },
+      }));
+    }
+  }, [productHoverData]);
+
+  // generic change handlers
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === "checkbox") {
@@ -35,7 +78,6 @@ export default function offerEditPage() {
     }
   };
 
-  // Toggle for the right-side switches (home/productRow/searchPage)
   const handleToggle = (key) => {
     setFormData((prev) => ({
       ...prev,
@@ -46,32 +88,9 @@ export default function offerEditPage() {
     }));
   };
 
-  // Notification toggle (you had a custom button)
   const toggleNotification = () => {
     setFormData((prev) => ({ ...prev, sendNotification: !prev.sendNotification }));
   };
-
-  // Listen to the navbar event
-  useEffect(() => {
-    const handler = (e) => {
-      const detail = e?.detail || {};
-      setFormData((prev) => ({
-        ...prev,
-        promotionType: detail.promotionType ?? prev.promotionType,
-        title: detail.title ?? prev.title,
-        description: detail.description ?? prev.description,
-        productRow: detail.productRow ?? prev.productRow,
-        showOnScreen: {
-          ...prev.showOnScreen,
-          productRow:
-            detail.showOnScreenProductRow ?? prev.showOnScreen.productRow,
-        },
-      }));
-    };
-
-    window.addEventListener("nav:productsClicked", handler);
-    return () => window.removeEventListener("nav:productsClicked", handler);
-  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -154,8 +173,8 @@ export default function offerEditPage() {
                 className="w-full px-3 py-2 rounded text-gray-700"
                 required
               >
-                <option value="">Please enter the Promotion type..</option>
-                <option value="row1">Product Row 1</option>
+                <option value="">Please select a product row..</option>
+                <option value="row1">Catch our always discounted prices</option>
                 <option value="row2">Product Row 2</option>
                 <option value="row3">Product Row 3</option>
               </select>
@@ -186,6 +205,14 @@ export default function offerEditPage() {
               </div>
             </div>
           </div>
+          {/* Hover Preview Box */}
+{productHoverData && (
+  <div className="bg-white border border-gray-200 p-2 shadow">
+    <h2 className="text-xl font-bold mb-1">Category</h2>
+    <p className="text-lg bg-gray-300">Pooja Items</p>
+  </div>
+)}
+
 
           {/* Branch */}
           <div className="col-span-2">
@@ -214,7 +241,7 @@ export default function offerEditPage() {
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleChange}
-                placeholder="dd----yyyy--:---"
+                placeholder="dd-mm-yyyy"
                 className="text-xl font-semibold pl-3 text-gray-500 w-full bg-transparent outline-none"
               />
             </div>
@@ -232,7 +259,7 @@ export default function offerEditPage() {
                 name="endDate"
                 value={formData.endDate}
                 onChange={handleChange}
-                placeholder="dd----yyyy--:---"
+                placeholder="dd-mm-yyyy"
                 required
                 className="text-xl font-semibold pl-3 text-gray-500 w-full bg-transparent outline-none"
               />
@@ -241,6 +268,7 @@ export default function offerEditPage() {
         </div>
 
         {/* RIGHT COLUMN */}
+        <div>
         <div className="flex flex-col gap-10">
           <div className="bg-white border border-gray-200 p-4 pb-8 shadow rounded space-y-4">
             <label className="block text-xl font-bold mb-6 flex justify-between">
@@ -302,7 +330,69 @@ export default function offerEditPage() {
               <span className="text-gray-800 pl-2 text-lg">Search Page</span>
             </div>
           </div>
-        </div>
+       </div>
+        {productHoverData && (
+  <div className="bg-white border border-gray-200 mt-4 mb-4 p-2 shadow">
+    <h2 className="text-xl font-bold mb-1">Product Row Title</h2>
+    <p className="text-lg ">Pooja Essentials🪔</p>
+  </div>
+ 
+)}
+        {productHoverData && (
+  <div className="bg-white border border-gray-200 mt-4 mb-4 p-2 shadow">
+    <h2 className="text-xl font-bold mb-1">Product Row Description</h2>
+    <p className="text-lg ">Pooja Essentials🪔</p>
+  </div>
+ 
+)}
+
+{/* Image Upload Box */}
+
+{productHoverData && (
+<div className="bg-white border border-gray-200 mt-4 mb-4 p-4 shadow rounded relative">
+  <h2 className="text-xl font-bold mb-2">Image upload for product section</h2>
+
+  {/* Validation message */}
+  <p className="text-sm text-red-500 mb-2">Image size should be less than 1MB</p>
+
+  {/* Upload & Delete Icons */}
+  <div className="flex justify-end gap-3 mb-4">
+    {/* Upload Icon Placeholder (Use a real input if needed) */}
+    <button className="text-blue-600 hover:text-blue-800 transition duration-150" title="Upload Image">
+      📤
+    </button>
+
+    {/* Cross Icon */}
+    <button className="text-black hover:text-red-800 transition duration-150" title="Remove Image">
+      ❌
+    </button>
+  </div>
+
+  {/* Image Preview */}
+  <div className="relative w-full max -w-2xl border border-gray-300 rounded overflow-hidden">
+    <img
+      src="/diya.jpg"
+      alt="Pooja Essentials"
+      className="w-full h-auto object-cover"
+    />
+    <div className="absolute top-0 left-0 w-full text-3xl text-red-500 text-center py-2">
+      Pooja Essentials
+    </div>
+ </div>
+ 
+  </div>
+
+)}
+
+
+
+</div>
+
+
+
+
+
+
       </form>
 
       {/* Action Buttons */}

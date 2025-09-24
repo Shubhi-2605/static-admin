@@ -5,6 +5,7 @@ export default function NavbarWithProducts() {
   const router = useRouter();
 
   const onProductsClick = (e) => {
+    console.log("Navbar :products clicked")
     // keep normal navigation if needed:
     // router.push('/products') // optional
 
@@ -16,10 +17,15 @@ export default function NavbarWithProducts() {
           title: "Pooja Essentials",
           description: "Pooja Essentials",
           productRow: "row1",
+          startDate: "23-09-2025", // add this
+          endDate: "30-09-2025",
+          
+        
           // you can include other fields later (category, branch, imageUrl...)
           showOnScreenProductRow: true,
+          
         },
-      })
+      }) 
     );
   };
 

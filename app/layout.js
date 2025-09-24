@@ -1,7 +1,8 @@
 // app/layout.js
 
 import './globals.css';
-import Navbar from '../components/Navbar'; // Make sure the path is correct
+import Navbar from '../components/Navbar'; 
+import { FormProvider } from '../context/FormContext';  // <-- import provider
 
 export const metadata = {
   title: 'admin-Panel',
@@ -12,8 +13,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        <main className="p-6">{children}</main>
+        {/* Wrap everything in FormProvider */}
+        <FormProvider>
+          <Navbar />
+          <main className="p-6">{children}</main>
+        </FormProvider>
       </body>
     </html>
   );

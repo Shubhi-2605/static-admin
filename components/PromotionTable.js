@@ -47,7 +47,7 @@ export default function PromotionTable() {
   return (
 
     <div className="min-h-screen bg-gray-100 p-6">
-      <div className="bg-gray-200 px-6 py-4 rounded-t-lg mb-6">
+      <div className="px-6 py-4 mb-6">
         <h1 className="text-2xl font-bold text-gray-400">Promotion List</h1>
       </div>
 <div className="bg-white shadow  border border-gray-300 p-6">
@@ -73,8 +73,8 @@ export default function PromotionTable() {
         </div>
       </div>
 
-      <table className="min-w-full bg-white border border-gray-200 shadow-sm">
-        <thead className="bg-gray-100">
+      <table className=" overflow-x-auto min-w-full bg-white border-collapse border-b border-gray-200">
+        <thead className="bg-gray-100 border-b ">
           <tr>
             <th className="text-left px-4 py-2">Title</th>
             <th className="text-left px-4 py-2">Description</th>
@@ -89,7 +89,7 @@ export default function PromotionTable() {
         </thead>
         <tbody>
           {fakePromotions.map((promo, index) => (
-            <tr key={index} className="border-t hover:bg-gray-50">
+            <tr key={index} className="border-b border-gray-200 border-t border-gray-200 hover:bg-gray-50">
               <td className="px-4 py-2">{promo.title}</td>
               <td className="px-4 py-2">{promo.description}</td>
               <td className="px-4 py-2">{promo.start}</td>

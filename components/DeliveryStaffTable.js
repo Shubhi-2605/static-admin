@@ -14,55 +14,62 @@ export default function DeliveryStaffTable() {
   ];
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Delivery Staff List</h2>
+    <div className="p-6 bg-gray-55 min-h-screen">
+      <h2 className="text-xl  text-gray-400 font-bold mb-4">Delivery Staff List</h2>
 
 
 
 
 {/* Filters Section */}
-<div className="  p-4  mb-4">
-  {/* Row 1: Name and Store */}
-  <div className=" flex items-center justify-between gap-4 mb-6">
-    {/* Name Field */}
-    <div className="flex flex-col ">
-      <label className="flex items-center gap-2 text-sm font-medium mb-1">Name
-      <input
-        id="name"
-        type="text"
-        placeholder="Please enter the name"
-        className="border rounded px-4 py-2 w-80 "
-      />
-      </label>
-    </div>
-
-    {/* Store Dropdown */}
-    <div className="flex flex-col">
-      <label className="flex items-center gap-2 text-sm font-medium mb-1" >Store
-      <select
-        id="store"
-        className="border rounded px-4 py-2 w-64"
-      >
-        <option value="">All Stores</option>
-        {/* Add more store options dynamically if needed */}
-      </select>
-      </label>
-    </div>
+<div className="bg-white p-4 mb-4">
+  
+{/* Row: Name + Store in one line */}
+<div className="flex items-center justify-between gap-6 mb-6">
+  
+  {/* Name Field */}
+  <div className="flex items-center gap-2 w-1/2">
+    <label htmlFor="name" className="text-xl font-bold">
+      Name
+    </label>
+    <input
+      id="name"
+      type="text"
+      placeholder="Please enter the name"
+      className="border border-gray-200 shadow-sm px-4 py-2 flex-1"
+    />
   </div>
 
+  {/* Store Field */}
+  <div className="flex items-center gap-2 w-1/2">
+    <label htmlFor="store" className="text-xl font-bold">
+      Store
+    </label>
+    <select
+      id="store"
+      className="border border-gray-200 shadow-sm px-4 py-2 flex-1"
+    >
+      <option value="">All Stores</option>
+    </select>
+  </div>
+</div>
+
+
+ 
+
+
   {/* Row 2: Buttons aligned to the right */}
-  <div className="flex justify-end gap-2">
-    <button className="bg-white text-gray-800 px-4 py-2 rounded hover:bg-blue-700 border">
+  <div className="flex justify-end mb-4 gap-2">
+    <button className="bg-gray-200 text-gray-800 px-4 py-2 border border-gray-200 hover:bg-blue-700 border">
       + Add New
     </button>
-    <button className="bg-white text-gray-800 px-4 py-2 rounded hover:bg-red-600 border">
+    <button className="bg-gray-200 text-gray-800 px-4 py-2 border border-gray-200">
       Search
     </button>
     <button className="bg-red-600 text-white rounded shadow p-2 hover:bg-red-700">
       <TrashIcon className="h-5 w-5" />
     </button>
   </div>
-</div>
+
 
 
 
@@ -70,7 +77,7 @@ export default function DeliveryStaffTable() {
 
       {/* Table */}
       <table className="min-w-full bg-white border border-gray-200 shadow-sm">
-        <thead className="bg-gray-100">
+        <thead >
           <tr>
 
 
@@ -101,29 +108,35 @@ export default function DeliveryStaffTable() {
           </tr>
         </thead>
         <tbody>
-          {fakePromotions.map((promo, index) => (
-            <tr key={index} className="border-t hover:bg-gray-50">
-              <td className="px-4 py-2">{promo.name}</td>
-              <td className="px-4 py-2">{promo.surname}</td>
-              <td className="px-4 py-2">{promo.phone}</td>
-              <td className="px-4 py-2">
-                <Link
-                  href={`/promotionregister/${index + 1}`}
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-end gap-2"
-                >
-                  <PencilIcon className="h-5 w-5" />
-                  Edit
-                </Link>
-              </td>
-              <td className="px-4 py-2">
-                <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 flex items-center gap-2">
-                  <TrashIcon className="h-5 w-5 text-white" />
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+  {fakePromotions.map((promo, index) => (
+    <tr key={index} className="border-t border-gray-300 hover:bg-gray-50">
+      <td className="px-4 py-2">{promo.name}</td>
+      <td className="px-4 py-2">{promo.surname}</td>
+      <td className="px-4 py-2">{promo.phone}</td>
+
+      {/* Actions aligned right */}
+      <td className="px-4 py-2 text-right">
+        <div className="flex justify-end gap-2">
+          <Link
+            href={`/promotionregister/${index + 1}`}
+            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center gap-1"
+          >
+            <PencilIcon className="h-5 w-5" />
+            Edit
+          </Link>
+          <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 flex items-center gap-1">
+            <TrashIcon className="h-5 w-5" />
+           
+          </button>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
+
+
+
 
         {/* Footer */}
         <tfoot className="bg-gray-50">
@@ -145,6 +158,7 @@ export default function DeliveryStaffTable() {
           </tr>
         </tfoot>
       </table>
+    </div>
     </div>
   );
 }
