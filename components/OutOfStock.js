@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { ArrowsUpDownIcon, MagnifyingGlassCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowsUpDownIcon, DocumentIcon, MagnifyingGlassIcon, TrashIcon ,XMarkIcon} from '@heroicons/react/24/solid';
 import Link from 'next/link';
 
 export default function OutOfStock() {
@@ -11,70 +11,101 @@ export default function OutOfStock() {
   ];
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Out Of stock</h2>
+    <div className="  p-6 min-h-screen bh-neutral-100">
+<div className="flex items-center justify-between mb-4">
+  {/* Heading */}
+  <h1 className="text-2xl font-semibold text-gray-800">Out Of Stock</h1>
 
-      <div className="p-4 mb-4">
+  {/* Export Button */}
+  <button className="flex items-center gap-2 bg-gray-200 text-gray-400 px-4 py-2 rounded hover:bg-blue-700">
+    <DocumentIcon className="h-5 w-5" />
+    <span>Export Product List</span>
+  </button>
+</div>
+      
+      
+      
+      
+      
+      
+      <div className="p-4 mb-4 bg-white">
         {/* Branch + Name Row */}
-        <div className="flex items-center justify-between gap-4 mb-6">
-          {/* Branch */}
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-semibold">Branch</label>
-            <select id="branch" className="border rounded px-4 py-2 w-64">
-              <option value="">Add branch</option>
-              <option>discovery garden</option>
-            </select>
-          </div>
 
-          {/* Name */}
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium">Name</label>
-            <input
-              id="name"
-              type="text"
-              placeholder="Please enter the name"
-              className="border rounded px-4 py-2 w-64"
-            />
-          </div>
-        </div>
+{/* Branch + Name Row */}
+<div className="flex gap-4 mb-1">
+  {/* Branch Box */}
+  <div className="w-1/2 border border-gray-100 shadow-sm px-4 py-0.5 bg-white text-gray-800 rounded">
+    <div className=" font-semibold mb-1">Branch</div>
+    <div className="flex items-center justify-between bg-gray-200 px-3 py-0.5 rounded">
+      <span className=" font-bold">Discovery Garden</span>
+      <XMarkIcon className="h-5 w-5 text-red-500 cursor-pointer hover:text-red-700" />
+    </div>
+  </div>
 
-        {/* Category */}
-        <div className="flex items-center gap-2 mb-4">
-          <label className="text-sm font-medium">Category</label>
-          <input
-            id="category"
-            type="text"
-            placeholder="Please select the category"
-            className="border rounded px-4 py-2 w-64"
-          />
-        </div>
+  {/* Name Input */}
+  <div className="w-1/2 border border-gray-100 shadow-sm px-4 py-2 bg-white rounded">
+    <label className="block text-lg font-semibold mb-1">Name</label>
+    <input
+      type="text"
+      className="w-full rounded px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Please enter the product name."
+    />
+  </div>
+</div>
 
-        {/* Buttons */}
-        <div className="flex justify-end space-x-2 mb-4">
-          <button className="bg-white text-gray-800 px-4 py-2 rounded hover:bg-gray-200">
-            + Search
-          </button>
-          <button className="bg-red-500 text-gray-800 px-4 py-2 rounded hover:bg-gray-200">
-            <TrashIcon className="h-5 w-5"/>
-          </button>
-        </div>
+<div className="flex items-start justify-between mb-4 w-full">
+  {/* Category Box */}
+  <div className="w-1/2 border border-gray-100 shadow-sm rounded px-4 py-2 bg-white">
+    <label className="block text-lg font-semibold mb-1">Category</label>
+    <input
+      type="text"
+      placeholder="Please select the category."
+      className="w-full rounded px-3 py-2 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
 
+  {/* Buttons (outside the box, right-aligned) */}
+  <div className="flex items-center space-x-2 mt-6 ml-4">
+    <button className=" flex items-center bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-200 ">
+      <MagnifyingGlassIcon className="h-5 w-5"/> <span>Search</span>
+    </button>
+    <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+      <TrashIcon className="h-5 w-5" />
+    </button>
+  </div>
+</div>
+
+       
+      
+        
+        
         {/* Table */}
-        <table className="min-w-full bg-white border-gray-200 shadow-sm">
-          <thead className="bg-gray-100">
+        <table className=" border-collapse border-t border-gray-200 py-4 mt-4 min-w-full bg-white">
+          <thead className="bg-white ">
             <tr>
-              <th className="text-left px-4 py-2">
-                <div className="flex items-center gap-2">
-                  Product name <ArrowsUpDownIcon className="text-gray h-5 w-5" />
+              <th className="text-left px-4 py-4 gap-1">
+                <div className="flex items-center">
+                  Product name <ArrowsUpDownIcon className="text-gray-400 stroke-3 h-5 w-5" />
                 </div>
               </th>
               <th className="text-left px-4 py-2">
                 <div className="flex items-center gap-2">
-                  Category <ArrowsUpDownIcon className="text-gray h-5 w-5" />
+                  Category <ArrowsUpDownIcon className="text-gray-400 h-5 w-5" />
                 </div>
               </th>
-              <th className="text-left px-4 py-2">Price</th>
-              <th className="text-left px-4 py-2">Quantity</th>
+              <th className="text-left px-4 py-2">
+                <div className="flex items-center gap-2">
+                  Price <ArrowsUpDownIcon className="text-gray-400 h-5 w-5" />
+                </div>
+              </th>
+
+              <th className="text-left px-4 py-2">
+                <div className="flex items-center gap-2">
+                  Quantity <ArrowsUpDownIcon className="text-gray-400 h-5 w-5" />
+                </div>
+              </th>
+
+              
               <th className="text-left px-4 py-2">In Display</th>
               <th className="text-left px-4 py-2">In Stock</th>
               <th className="text-left px-4 py-2">Status Changed</th>
@@ -83,7 +114,7 @@ export default function OutOfStock() {
 
           <tbody>
             {fakeStock.map((stock, index) => (
-              <tr key={index} className="border-t hover:bg-gray-50">
+              <tr key={index} className=" border-t border-b border-gray-200 hover:bg-gray-50 odd:bg-gray-100">
                 <td className="px-4 py-2">{stock.productName}</td>
                 <td className="px-4 py-2">{stock.category}</td>
                 <td className="px-4 py-2">{stock.price}</td>

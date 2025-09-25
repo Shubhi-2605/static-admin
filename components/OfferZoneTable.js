@@ -52,12 +52,12 @@ export default function OfferZoneTable() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* HEADER */}
-      <div className="bg-gray-200 px-6 py-4 rounded-t-lg">
+      <div className=" px-6 py-4 border-t border-gray-200">
         <h1 className="text-2xl font-bold text-gray-700">Offer’s List</h1>
       </div>
 
       {/* BODY (form + table) */}
-      <div className="bg-white shadow rounded-b-lg p-6">
+      <div className="bg-white  p-6">
         {/* FORM */}
         <div className="space-y-4 mb-6">
           {/* Row 1: Input */}
@@ -65,7 +65,7 @@ export default function OfferZoneTable() {
             <input
               type="text"
               placeholder="Promotion Title"
-              className="border border-gray-200 shadow-sm px-4 py-2 w-full"
+              className="border border-gray-200 px-4 py-2 w-full"
             />
           </div>
 
@@ -88,8 +88,8 @@ export default function OfferZoneTable() {
         </div>
 
         {/* TABLE */}
-        <table className="min-w-full bg-white border border-gray-200 shadow-sm">
-          <thead className="bg-gray-100">
+        <table className="min-w-full bg-white border-t border-collapse border-gray-200 ">
+          <thead className="bg-white">
             <tr className="border-b border-gray-200">
               <th className="text-left px-4 py-2">Title</th>
               <th className="text-left px-4 py-2">Description</th>
@@ -111,7 +111,7 @@ export default function OfferZoneTable() {
           </thead>
           <tbody>
             {fakeOffers.map((offer, index) => (
-              <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+              <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 odd:bg-gray-100">
                 <td className="px-4 py-2">{offer.title}</td>
                 <td className="px-4 py-2">{offer.description}</td>
                 <td className="px-4 py-2">{offer.typeOfOffer}</td>
@@ -133,7 +133,7 @@ export default function OfferZoneTable() {
 
   <Link
     href={`/offerzone/${index + 1}?sort=desc`}
-    className="bg-cyan-400 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center justify-center"
+    className="bg-cyan-400 text-white px-3 py-1 hover:bg-blue-600 flex items-center justify-center"
   >
     <ArrowDownIcon className="h-5 w-5" />
   </Link>
@@ -148,7 +148,7 @@ export default function OfferZoneTable() {
                 <td className="px-4 py-2">
                   <Link
                     href={`/offerregister/${index + 1}`}
-                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center gap-2"
+                    className="bg-blue-500 text-white px-3 py-1 hover:bg-blue-600 flex items-center gap-2"
                   >
                     <PencilIcon className="h-5 w-5" /> Edit
                   </Link>

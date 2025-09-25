@@ -3,7 +3,7 @@
 import React from 'react';
 
 import Link from "next/link"; 
-import {PencilIcon,TrashIcon} from "@heroicons/react/24/solid"
+import {PencilIcon,TrashIcon,ArrowUpIcon,ArrowDownIcon} from "@heroicons/react/24/solid"
 
 export default function PromotionTable() {
   const fakePromotions = [
@@ -80,7 +80,10 @@ export default function PromotionTable() {
             <th className="text-left px-4 py-2">Description</th>
             <th className="text-left px-4 py-2">Start</th>
             <th className="text-left px-4 py-2">End</th>
+            
             <th className="text-left px-4 py-2">Priority</th>
+            <th className="text-left px-4 py-2">Index</th>
+
             <th className="text-left px-4 py-2">Edit</th>
             <th className="text-left px-4 py-2">Status</th>
             <th className="text-left px-4 py-2">Delete</th>
@@ -95,6 +98,28 @@ export default function PromotionTable() {
               <td className="px-4 py-2">{promo.start}</td>
               <td className="px-4 py-2">{promo.end}</td>
               <td className="px-4 py-2">{promo.priority}</td>
+
+
+
+              <td className="px-4 py-2">
+                <div className="flex items-center gap-2">
+  <Link
+    href={`/offerzone/${index + 1}?sort=asc`}
+    className="bg-cyan-400 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center justify-center"
+  >
+    <ArrowUpIcon className="h-5 w-5" />
+  </Link>
+
+  <Link
+    href={`/offerzone/${index + 1}?sort=desc`}
+    className="bg-cyan-400 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center justify-center"
+  >
+    <ArrowDownIcon className="h-5 w-5" />
+  </Link>
+</div>
+
+                
+                </td>
 
               <td className="px-4 py-2">
     

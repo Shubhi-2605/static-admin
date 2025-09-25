@@ -67,14 +67,14 @@ return(
       <h2 className="text-xl text-gray-400 font-bold mb-4">Sent Push Notification List</h2>
   <div className="bg-white p-4 mb-4 ">
       <div className="flex justify-between mb-4">
-            <input type ="text" placeholder="Sent Push Notification Title Search" className= "border border-gray-200 shadow-sm px-4 py-2 w-full"
+            <input type ="text" placeholder="Sent Push Notification Title Search" className= "border border-gray-200 px-4 py-2 w-full"
             />
 
         </div>
 
 
 
-        <div className="flex flex-col space-y-4 border-b border-gray-200 shadow-sm">
+        <div className="flex flex-col space-y-4 border-b border-gray-200 ">
        
         <div className="flex justify-end space-x-2">
         <button className="flex justify-between bg-gray-100 text-gray-800 px-4 py-2 mb-4 rounded hover:bg-gray-500">
@@ -95,7 +95,7 @@ return(
       </div>
 
 
- <div className="overflow-x-auto  shadow-sm">
+ <div className="overflow-x-auto ">
         <table className="min-w-full table-auto text-sm text-left border-collapse ">
           <thead className="bg-white text-black font-semibold text-l border-b border-gray-200 p-20">
             <tr>
@@ -128,7 +128,7 @@ return(
           </thead>
           <tbody>
             {pushData.map((item, idx) => (
-              <tr key={idx} className="border-b border-gray-200 border-collapse shadow-sm hover:bg-gray-50">
+              <tr key={idx} className="border-b border-gray-200 border-collapse hover:bg-gray-50 odd:bg-gray-100">
                 <td className="px-4 py-2">{item.username}</td>
                 <td className="px-4 py-2">{item.email}</td>
                 <td className="px-4 py-2">{item.phone}</td>

@@ -152,7 +152,7 @@ const handleCancel = () => {
     Select Promotion Type <span className="text-red-500"></span>
   </label>
 
-  <div className="bg-white border rounded-lg p-4  shadow">
+  <div className="bg-white border border-gray-200 p-4  shadow">
     <div className="grid grid-cols-3  gap-6">
       {[
         { type: "percentage", icon: <Percent size={60} strokeWidth={3} className="text-gray-700" />, label: "Percentage" },
@@ -294,9 +294,9 @@ const handleCancel = () => {
 
     {/* Image Preview */}
     <img
-      src="/fruits.jpg"
+      src="/veg1.jpg"
       alt="Preview"
-      className="w-full h-80 object-cover border rounded mb-2"
+      className="w-full h-80 object-cover border-collapse rounded mb-2"
     />
 
     {/* File Input */}
@@ -322,9 +322,9 @@ const handleCancel = () => {
 
     {/* Image inside phone */}
     <img
-      src="/fruits.jpg"
+      src="/veg1.jpg"
       alt="Phone Preview"
-      className="w-full h-full object-cover"
+      className="w-full h-3/4 object-cover"
     />
 
     {/* Title overlay */}

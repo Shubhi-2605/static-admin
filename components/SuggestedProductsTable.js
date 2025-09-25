@@ -1,5 +1,6 @@
 'use client';
 
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 
 export default function SuggestedProductsTable() {
@@ -22,7 +23,7 @@ export default function SuggestedProductsTable() {
         surname: '--Deleted User--',
         email: '--Deleted User--',
         phone: '--Deleted User--',
-        suggestion: 'Pork',
+        suggestion: 'Plum',
         state: 'Pending',
         date: '30/08/2025 12:41',
       },
@@ -40,7 +41,7 @@ export default function SuggestedProductsTable() {
         surname: 'Bhattarai',
         email: 'rajitbhattarai46@gmail.com',
         phone: '+971526093507',
-        suggestion: 'I order pork plz make it fast already 30 min',
+        suggestion: 'I order pizza plz make it fast already 30 min',
         state: 'Pending',
         date: '17/08/2025 09:58',
       },
@@ -58,7 +59,7 @@ export default function SuggestedProductsTable() {
         surname: 'Banez',
         email: 'kevinbanez0115@gmail.com',
         phone: '+971506571140',
-        suggestion: 'Pork belly',
+        suggestion: 'Plum',
         state: 'Pending',
         date: '14/08/2025 05:06',
       },
@@ -85,7 +86,7 @@ export default function SuggestedProductsTable() {
         surname: 'Gorgonia',
         email: 'melgorgona@gmail.com',
         phone: '+971528002601',
-        suggestion: 'Pork belly',
+        suggestion: 'Pizza',
         state: 'Pending',
         date: '13/08/2025 05:18',
       },
@@ -95,41 +96,80 @@ export default function SuggestedProductsTable() {
   }, []);
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-gray-100">
       <h1 className=" text-2xl font-semibold mb-6">Suggested Products</h1>
+      <div className="bg-white p-6">
+       <div className="border border-gray-100 px-3 mb-4 p-2">
+        <input type="text"
+        className ="px-3 py-2 w-full"
+        placeholder="Suggestion Search.."
+        />
+        </div>
+        <div className='flex justify-end mb-4  border-rounded'>
+          <button className='flex items-center text-gray-500 bg-gray-200 px-4 py-3  rounded '><MagnifyingGlassIcon className="h-5 w-5 stroke-3"/>Search</button>
 
-      <div className="overflow-x-auto border rounded">
-        <table className="min-w-full table-auto text-sm text-left border-collapse">
-          <thead className="bg-gray-100 text-gray-700 uppercase border-b">
+        </div>
+        
+
+      <div className=" overflow-x-auto">
+        <table className="min-w-full p-6 table-auto text-sm text-left border-collapse">
+          <thead className="bg-white  font-bold  border-t border-gray-100 p-6">
             <tr>
-              <th className="px-4 py-2" border border-gray-300 >Name</th>
-              <th className="px-4 py-2"  border border-gray-300>Surname</th>
-              <th className="px-4 py-2"  border border-gray-300>Email</th>
-              <th className="px-4 py-2"  border border-gray-300>Phone</th>
-              <th className="px-4 py-2" border border-gray-300>Suggestion</th>
-              <th className="px-4 py-2" border border-gray-300>State</th>
-              <th className="px-4 py-2"  border border-gray-300>Date</th>
+              <th className="px-4 py-2" >Name</th>
+              <th className="px-4 py-2">Surname</th>
+              <th className="px-4 py-2">Email</th>
+              <th className="px-4 py-2">Phone</th>
+              <th className="px-4 py-2">Suggestion</th>
+              <th className="px-4 py-2">State</th>
+              <th className="px-4 py-2" >Date</th>
             </tr>
           </thead>
           <tbody>
             {feedbackData.map((item, idx) => (
-              <tr key={idx} className="border-b hover:bg-gray-50">
-                <td className="px-4 py-2 border border-gray-300">{item.name}</td>
-                <td className="px-4 py-2 border border-gray-300">{item.surname}</td>
-                <td className="px-4 py-2 border border-gray-300">{item.email}</td>
-                <td className="px-4 py-2 border border-gray-300">{item.phone}</td>
-                <td className="px-4 py-2 border border-gray-300">{item.suggestion}</td>
-                <td className="px-4 py-2 border border-gray-300">{item.state}</td>
-                <td className="px-4 py-2 border border-gray-300">{item.date}</td>
+              <tr key={idx} className="border-b border-gray-100 odd:bg-gray-100 hover:bg-gray-50">
+                <td className="px-4 py-2">{item.name}</td>
+                <td className="px-4 py-2">{item.surname}</td>
+                <td className="px-4 py-2">{item.email}</td>
+                <td className="px-4 py-2">{item.phone}</td>
+                <td className="px-4 py-2">{item.suggestion}</td>
+                <td className="px-4 py-2">{item.state}</td>
+                <td className="px-4 py-2">{item.date}</td>
               </tr>
             ))}
           </tbody>
+       
+          <tfoot className="bg-gray-50">
+    <tr>
+      <td colSpan="7" className="px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Left side: info text */}
+          <span className="text-sm text-gray-600">
+            Showing 1 to {feedbackData.length} of {feedbackData.length} entries
+          </span>
+
+          {/* Right side: pagination buttons */}
+          <div className="space-x-2">
+            <button className="px-3 py-1 border rounded hover:bg-gray-100">Prev</button>
+            <button className="px-3 py-1 border rounded bg-blue-500 text-white hover:bg-blue-600">1</button>
+            <button className="px-3 py-1 border rounded hover:bg-gray-100">Next</button>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tfoot>
+
+       
+       
+       
+       
+       
+       
         </table>
       </div>
 
-      <p className="mt-4 text-sm text-gray-500">
-        Showing {feedbackData.length} entries
-      </p>
+     
+    </div>
+
     </div>
   );
 }

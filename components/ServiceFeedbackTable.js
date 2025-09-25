@@ -1,5 +1,6 @@
 'use client'
- import { useEffect,useState } from "react"
+ import { useEffect,useState } from "react";
+ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
  export default function ServiceFeedbackTable(){
     const [serviceData,setServiceData] = useState([]);
@@ -111,19 +112,27 @@ useEffect (()=>{
 },[]);
 return(
 
-    <div className="p-4">
-      <h1 className="text-2xl font-semibold mb-6">Service Feedback List</h1>
-  
+    <div className="p-4 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-semibold  text-gray-500 mb-6">Service Feedback List</h1>
+  <div className="bg-white p-6">
+
+
       <div className="flex justify-between mb-4">
-            <input type ="text" placeholder="feedback search" className= "border rounded px-4 py-2 w-1/3"
+            <input type ="text" placeholder="feedback search" className= "border rounded border-gray-300 px-4 py-2 w-full"
             />
+
+        </div>
+    
+        <div className='flex justify-end mb-4  border-rounded'>
+          <button className='flex items-center text-gray-500 bg-gray-200 px-4 py-3  rounded '><MagnifyingGlassIcon className="h-5 w-5 stroke-3"/>Search</button>
 
         </div>
 
 
-      <div className="overflow-x-auto border rounded">
+
+      <div className="overflow-x-auto ">
         <table className="min-w-full table-auto text-sm text-left border-collapse">
-          <thead className="bg-gray-100 text-gray-700 uppercase border-b">
+          <thead className="bg-white  border-t  border-gray-200">
             <tr>
               <th className="px-4 py-2">Name</th>
              
@@ -144,7 +153,7 @@ return(
           </thead>
           <tbody>
             {serviceData.map((item, idx) => (
-              <tr key={idx} className="border-b hover:bg-gray-50">
+              <tr key={idx} className="border-t border-gray-200 hover:bg-gray-50 odd:bg-gray-100">
                 <td className="px-4 py-2">{item.name}</td>
                 <td className="px-4 py-2">{item.emailPhone}</td>
                 <td className="px-4 py-2">{item.branch}</td>
@@ -163,12 +172,40 @@ return(
               </tr>
             ))}
           </tbody>
+
+
+
+          <tfoot className="bg-gray-50">
+    <tr>
+      <td colSpan="13" className="px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Left side: info text */}
+          <span className="text-sm text-gray-600">
+            Showing 1 to {serviceData.length} of {serviceData.length} entries
+          </span>
+
+          {/* Right side: pagination buttons */}
+          <div className="space-x-2">
+            <button className="px-3 py-1 border rounded hover:bg-gray-100">Prev</button>
+            <button className="px-3 py-1 border rounded bg-blue-500 text-white hover:bg-blue-600">1</button>
+            <button className="px-3 py-1 border rounded hover:bg-gray-100">Next</button>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tfoot>
+
         </table>
       </div>
 
 
-<p  className="mt-4 text-sm text-gray-500">Showing{ serviceData.length} enteries</p>
+ 
+ 
+ 
    </div>
+</div>
+
+
 )
 
 

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { UploadIcon,CrossIcon,X } from 'lucide-react';
+import { UploadIcon,PlusIcon,X } from 'lucide-react';
 
 
 export default function BranchInfo() {
@@ -139,7 +139,10 @@ export default function BranchInfo() {
     if (!formData.whatsapp.trim()) newErrors.whatsapp = 'WhatsApp number is required';
     if (!formData.lat.trim()) newErrors.lat = 'Latitude is required';
     if (!formData.lng.trim()) newErrors.lng = 'Longitude is required';
-  
+    if (!formData.img.trim()) newErrors.img = 'Image is required';
+    if (!formData.start.trim()) newErrors.start = 'Delivery start time is required';
+    if (!formData.lng.trim()) newErrors.lng = 'Delivery End time is required';
+
     setErrors(newErrors);
   
     return Object.keys(newErrors).length === 0;
@@ -157,17 +160,20 @@ export default function BranchInfo() {
 
 
 <div className="bg-gray-100 px-6 py-4 flex items-center justify-between">
-  <h2 className="text-lg font-semibold text-gray-800">Branch Info</h2>
-  <button
-    className="bg-gray-300 text-gray-500 px-4 py-2 rounded hover:bg-blue-700 text-sm"
+  <h2 className="text-2xl font-semibold text-gray-500">Branch Info</h2>
+  
+  
+    <button
+    className=" flex items-center gap-2 bg-gray-300 font-bold text-gray-500 px-4 py-2 rounded hover:bg-blue-700 text-sm"
     onClick={() => {
       // Your add branch logic here
       alert('Add branch clicked');
     }}
   >
-    +Add Branch
+    <PlusIcon strokeWidth={3} className="h-5 w-5 "/>Add Branch
   </button>
 </div>
+
 
 
 
@@ -179,7 +185,7 @@ export default function BranchInfo() {
         {/* Dropdown */}
 {/* Unified “Branch” dropdown inside a single box */}
 <div className="mb-4">
-  <div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${
+  <div className={`border px-3 pt-2 pb-1 w-full shadow-sm ${
     branchTouched && !selectedBranchId ? 'border-red-500' : 'border-gray-100'
   } relative`}>
     <label className="text-xl font-bold block mb-1">Branch
@@ -220,7 +226,7 @@ export default function BranchInfo() {
 
 
         <div className="mb-4">
-  <div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.email ? 'border-red-500' : 'border-gray-100'} relative`}>
+  <div className={`border px-3 pt-2 pb-1 w-full  shadow-sm ${errors.email ? 'border-red-500' : 'border-gray-100'} relative`}>
     <label className="text-xl font-bold block mb-1">
       Email <span className="text-red-500">*</span>
     </label>
@@ -231,12 +237,12 @@ export default function BranchInfo() {
       placeholder="Enter your email"
       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
     />
-    {errors.email && <span className="text-red-500 text-xs absolute -bottom-4">{errors.email}</span>}
+    {errors.email && <span className="text-red-500  absolute -bottom-4">{errors.email}</span>}
   </div>
 </div>
 
 <div className="mb-4">
-<div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.address ? 'border-red-500' : 'border-gray-100'} relative`}>
+<div className={`border px-3 pt-2 pb-1 w-full shadow-sm ${errors.address ? 'border-red-500' : 'border-gray-100'} relative`}>
 
     <label className="text-xl text-gray-900 block mb-1">Address
       <span className="text-red-500">*</span>
@@ -244,18 +250,18 @@ export default function BranchInfo() {
     <input
       type="text"
       value={formData.address}
-      className="w-full text-sm focus:outline-none"
+      className="w-full focus:outline-none"
       placeholder="Enter address"
       onChange={(e) => setFormData({ ...formData, address: e.target.value })}
     />
-    {errors.adress && <span className="text-red-500 text-xs absolute -bottom-4">{errors.adress}</span>}
+    {errors.adress && <span className="text-red-500 absolute -bottom-4">{errors.adress}</span>}
 
     
   </div>
 </div>
 
 <div className="mb-4">
-<div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.phone ? 'border-red-500' : 'border-gray-100'} relative`}>
+<div className={`border px-3 pt-2 pb-1 w-full shadow-sm ${errors.phone ? 'border-red-500' : 'border-gray-100'} relative`}>
 
     <label className="text-xl font-bold block mb-1">Phone<span className="text-red-500">*</span></label>
     <input
@@ -265,13 +271,13 @@ export default function BranchInfo() {
       placeholder="Enter phone"
       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
     />
-        {errors.phone && <span className="text-red-500 text-xs absolute -bottom-4">{errors.phone}</span>}
+        {errors.phone && <span className="text-red-500  absolute -bottom-4">{errors.phone}</span>}
 
   </div>
 </div>
 
 <div className="mb-4">
-<div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.whatsapp ? 'border-red-500' : 'border-gray-100'} relative`}>
+<div className={`border px-3 pt-2 pb-1 w-full shadow-sm ${errors.whatsapp ? 'border-red-500' : 'border-gray-100'} relative`}>
 
     <label className="text-xl font-bold block mb-1">WhatsApp
       <span className="text-red-500">*</span>
@@ -284,15 +290,22 @@ export default function BranchInfo() {
       onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
 
     />
-        {errors.whatsapp && <span className="text-red-500 text-xs absolute -bottom-4">{errors.whatsapp}</span>}
+        {errors.whatsapp && <span className="text-red-500  absolute -bottom-4">{errors.whatsapp}</span>}
 
   </div>
 </div>
 
+
+
+
+
+
+
+
 <div className="flex gap-4 mb-4">
   {/* Store Lat */}
   <div className="w-1/2">
-  <div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.lat ? 'border-red-500' : 'border-gray-100'} relative`}>
+  <div className={`border px-3 pt-2 pb-1 w-full  shadow-sm ${errors.lat ? 'border-red-500' : 'border-gray-100'} relative`}>
 
       <label className="text-xl font-bold block mb-1">Store Lat<span className="text-red-500">*</span></label>
       <input
@@ -302,14 +315,14 @@ export default function BranchInfo() {
         placeholder="Enter Latitude"
         onChange={(e) => setFormData({ ...formData, lat: e.target.value })}
       />
-              {errors.lat && <span className="text-red-500 text-xs absolute -bottom-4">{errors.lat}</span>}
+              {errors.lat && <span className="text-red-500  absolute -bottom-4">{errors.lat}</span>}
 
     </div>
   </div>
 
   {/* Store Lng */}
   <div className="w-1/2">
-  <div className={`border px-3 pt-2 pb-1 w-full text-sm shadow-sm ${errors.lng ? 'border-red-500' : 'border-gray-100'} relative`}>
+  <div className={`border px-3 pt-2 pb-1 w-full shadow-sm ${errors.lng ? 'border-red-500' : 'border-gray-100'} relative`}>
 
       <label className="text-xl font-bold block mb-1">Store Lng<span className="text-red-500">*</span></label>
       <input
@@ -319,42 +332,73 @@ export default function BranchInfo() {
         placeholder="Enter Longitude"
         onChange={(e) => setFormData({ ...formData, lng: e.target.value })}
       />
-              {errors.lng && <span className="text-red-500 text-xs absolute -bottom-4">{errors.lng}</span>}
+              {errors.lng && <span className="text-red-500  absolute -bottom-4">{errors.lng}</span>}
 
     </div>
   </div>
 </div>
+
+
+
+{/* Toggle Store Open */}
+
+ 
+
+
+{selectedBranchId && (
+  <div className="mb-4 w-full">
+    <div className="border px-3 pt-2 pb-2 w-full shadow-sm border-gray-100">
+      <label className="text-xl font-bold block mb-2">Is Store Open</label>
+      <label className="relative inline-flex items-center cursor-pointer">
+        <input
+          type="checkbox"
+          className="sr-only peer"
+          checked={formData.isStoreOpen}
+          onChange={(e) =>
+            setFormData({ ...formData, isStoreOpen: e.target.checked })
+          }
+        />
+        <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-cyan-500 transition-colors duration-200"></div>
+        <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-full"></div>
+      </label>
+    </div>
+  </div>
+)}
+
+
 
           
 <br/>
 
 
 <div className="col-span-2">
-  <div className="border border-gray-100 shadow-sm px-3 pt-2 pb-2 w-full text-sm">
-    <label className="text-xl font-bold  mb-1">Image</label>
+<div className={`border px-3 pt-2 pb-1 w-full  shadow-sm ${errors.img ? 'border-red-500' : 'border-gray-100'} relative`}>
+
+    <label className="text-xl font-bold  mb-1">Image<span className="text-red-500">*</span></label>
 
     <div className="flex items-center justify-between">
       {/* File input */}
       <input
         type="file"
         accept="image/*"
-        className="text-sm text-gray-900 focus:outline-none"
+        className=" text-gray-900 focus:outline-none"
         onChange={(e) =>
           setFormData({ ...formData, imageUrl: e.target.files[0] })
         }
       />
+              {errors.img && <span className="text-red-500  absolute -bottom-4">{errors.img}</span>}
 
       {/* Icons */}
       <div className="flex gap-2">
         {/* Upload Arrow */}
-        <span className="text-gray-500 cursor-pointer"><UploadIcon className="h-5 w-5"/></span>
+        <span className="text-gray-500 cursor-pointer"><UploadIcon className="h-5 w-5 stroke-3"/></span>
 
         {/* Cross (Clear) */}
         <span
           className="text-gray-500 cursor-pointer"
           onClick={() => setFormData({ ...formData, imageUrl: '' })}
         >
-          <X className="h-5 w-5"/>
+          <X className="h-5 w-5 stroke-2"/>
         </span>
       </div>
     </div>
@@ -362,38 +406,44 @@ export default function BranchInfo() {
 </div>
 
  
+<div className="col-span-2 border border-gray-100  shadow-sm p-4 rounded">
+  {/* Outer box heading */}
+  <h2 className="text-lg font-semibold mb-4">Delivery time<span className="text-red-500">*</span></h2>
 
+  {/* Row with two boxes */}
+  <div className="flex gap-4">
+    {/* Start box */}
+    <div className={`flex-1 border border-gray-200 rounded p-4 shadow-sm ${errors.start ? 'border-red-500' : 'border-gray-100'} relative`}>
+      <label className="block font-semibold mb-2">Start</label>
+      <input
+        type="time"
+        value={formData.deliveryStart}
+        className="w-full bg-transparent focus:outline-none"
+        onChange={(e) =>
+          setFormData({ ...formData, deliveryStart: e.target.value })
+        }
+      />
+                    {errors.start && <span className="text-red-500 text-xs absolute -bottom-4">{errors.start}</span>}
 
+    </div>
 
+    {/* End box */}
+    <div className={`flex-1 border border-gray-200 rounded p-4 shadow-sm ${errors.end ? 'border-red-500' : 'border-gray-100'} relative`}>
+      <label className="block font-semibold mb-2">End<span className="text-red-500">*</span>*</label>
+      <input
+        type="time"
+        value={formData.deliveryEnd}
+        className="w-full bg-transparent focus:outline-none"
+        onChange={(e) =>
+          setFormData({ ...formData, deliveryEnd: e.target.value })
+        }
+      />
+                    {errors.end && <span className="text-red-500  absolute -bottom-4">{errors.end}</span>}
 
-<div className="mb-4">
-          <div className="border border-gray-100 shadow-sm px-2 pt-2 pb-1">
-            <label className="text-xl font-bold mb-1">Delivery Start</label>
-            <input
-              type="time"
-              value={formData.deliveryStart}
-              className={inputClass}
-              onChange={(e) =>
-                setFormData({ ...formData, deliveryStart: e.target.value })
-              }
-            />
-          </div>
-          </div>
+    </div>
+  </div>
+</div>
 
-
-          <div className="mb-4">
-            <div className="border border-gray-300 shadow-sm px-3 pt-2 pb-1  w-full text-sm ">
-            <label className="text-xl font-bold mb-1">Delivery End</label>
-            <input
-              type="time"
-              value={formData.deliveryEnd}
-              className={inputClass}
-              onChange={(e) =>
-                setFormData({ ...formData, deliveryEnd: e.target.value })
-              }
-            />
-            </div>
-          </div>
 
 
 
