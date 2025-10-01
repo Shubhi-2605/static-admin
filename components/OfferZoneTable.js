@@ -2,53 +2,92 @@
 
 import React from 'react';
 import Link from "next/link";
+import {useEffect,useState} from 'react';
+
 import { XCircleIcon,PencilIcon, TrashIcon,ArrowUpIcon,ArrowDownIcon,ArrowsUpDownIcon } from "@heroicons/react/24/solid";
 import { ArrowUpDownIcon } from 'lucide-react';
 
 
 export default function OfferZoneTable() {
-  const fakeOffers = [
-    {
-      title: 'Fasting treats',
-      description: 'Fasting treats',
-      typeOfOffer: 'ProductRow Section',
-      start: '29/07/2025 12:43 PM',
-      end: '31/08/2025 12:43 PM',
-      priority: 164,
-    },
-    {
-      title: 'Pooja Essentials',
-      description: 'Pooja Essentials 🙏',
-      typeOfOffer: 'ProductRow Section',
-      start: '28/07/2025 02:47 PM',
-      end: '31/08/2025 02:47 PM',
-      priority: 163,
-    },
-    {
-      title: 'Back to School, Back to Awesome!',
-      description: 'School time offers for kids',
-      typeOfOffer: 'ProductRow Section',
-      start: '28/07/2025 03:11 PM',
-      end: '31/08/2025 03:11 PM',
-      priority: 162,
-    },
-    {
-      title: 'Beat the Heat with Every Sip 🍹☀️',
-      description: 'Summer Juices You\'ll Love!',
-      typeOfOffer: 'ProductRow Section',
-      start: '05/06/2025 04:50 PM',
-      end: '31/08/2025 04:50 PM',
-      priority: 161,
-    },
-    {
-      title: 'Sparkle Your Summer Mood! 🍁😎✨',
-      description: 'Stay cool and refreshed',
-      typeOfOffer: 'ProductRow Section',
-      start: '05/06/2025 04:43 PM',
-      end: '31/08/2025 04:43 PM',
-      priority: 160,
-    },
-  ];
+
+  const [offers, setOffers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    fetchOffers();
+  }, []);
+  
+  const fetchOffers = async () => {
+    try {
+   const token = localStorage.getItem('token');
+      if (!token) {
+        console.warn('No token found in localStorage');
+        setLoading(false);
+        return; // Stop fetching if no token
+      }
+  
+      const response = await fetch('http://localhost:5000/api/new-offer-zone', {
+        headers: {
+          'Authorization': `Bearer ${token}`,  // ← add Authorization header here
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      const data = await response.json();
+      console.log("Fetched offers:", data.data);
+      setOffers(data.data || []);
+    } catch (error) {
+      console.error('Error fetching offers:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+
+  const handleAddOffer = async () => {
+    const newOffer = {
+      title: "Fasting treats",
+      description: "Fasting treats",
+      typeOfOffer: "ProductRow section",
+      startDate: "2025-09-20T00:00:00.000Z",
+      endDate: "2025-09-30T23:59:59.000Z",
+      status: "active",
+      priority: 1,
+      products: ["68ca8807e9bd1c18da6017c7"],
+      categories: ["68ca8647e878e3f49364e0b8"],
+      branches: ["68cbc9ba14147845b1ed4794"]
+    };
+  
+    try {
+      const res = await fetch('http://localhost:5000/api/new-offer-zone', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newOffer),
+      });
+  
+      if (!res.ok) {
+        throw new Error('Failed to create offer');
+      }
+  
+      const result = await res.json();
+      console.log("Offer created:", result);
+  
+      // Re-fetch the offers to update the table
+      fetchOffers();
+    } catch (err) {
+      console.error("Error creating offer:", err);
+    }
+  };
+  
+
+  
+
+
+
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* HEADER */}
@@ -109,79 +148,95 @@ export default function OfferZoneTable() {
               <th className="text-left px-4 py-2">Delete</th>
             </tr>
           </thead>
-          <tbody>
-            {fakeOffers.map((offer, index) => (
-              <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 odd:bg-gray-100">
-                <td className="px-4 py-2">{offer.title}</td>
-                <td className="px-4 py-2">{offer.description}</td>
-                <td className="px-4 py-2">{offer.typeOfOffer}</td>
-
-                <td className="px-4 py-2">{offer.start}</td>
-
-               <td className="px-4 py-2">{offer.end}</td>
-                <td className="px-4 py-2">{offer.priority}</td>
-
-
-                <td className="px-4 py-2">
-                <div className="flex items-center gap-2">
-  <Link
-    href={`/offerzone/${index + 1}?sort=asc`}
-    className="bg-cyan-400 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center justify-center"
-  >
-    <ArrowUpIcon className="h-5 w-5" />
-  </Link>
-
-  <Link
-    href={`/offerzone/${index + 1}?sort=desc`}
-    className="bg-cyan-400 text-white px-3 py-1 hover:bg-blue-600 flex items-center justify-center"
-  >
-    <ArrowDownIcon className="h-5 w-5" />
-  </Link>
-</div>
-
-                
-                </td>
 
 
 
+<tbody>
+  {Array.isArray(offers) && offers.length > 0 ? (
+    offers.map((offer, index) => (
+      <tr key={offer._id || index} className="border-b border-gray-200 hover:bg-gray-50 odd:bg-gray-100">
+        <td className="px-4 py-2">{offer.title}</td>
+        <td className="px-4 py-2">{offer.description}</td>
+        <td className="px-4 py-2">{offer.typeOfOffer}</td>
+        <td className="px-4 py-2">{new Date(offer.startDate).toLocaleString()}</td>
+        <td className="px-4 py-2">{new Date(offer.endDate).toLocaleString()}</td>
+        <td className="px-4 py-2">{offer.priority}</td>
 
-                <td className="px-4 py-2">
-                  <Link
-                    href={`/offerregister/${index + 1}`}
-                    className="bg-blue-500 text-white px-3 py-1 hover:bg-blue-600 flex items-center gap-2"
-                  >
-                    <PencilIcon className="h-5 w-5" /> Edit
-                  </Link>
-                </td>
+        <td className="px-4 py-2">
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/offerzone/${index + 1}?sort=asc`}
+              className="bg-cyan-400 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center justify-center"
+            >
+              <ArrowUpIcon className="h-5 w-5" />
+            </Link>
 
-                <td className="px-4 py-2">
+            <Link
+              href={`/offerzone/${index + 1}?sort=desc`}
+              className="bg-cyan-400 text-white px-3 py-1 hover:bg-blue-600 flex items-center justify-center"
+            >
+              <ArrowDownIcon className="h-5 w-5" />
+            </Link>
+          </div>
+        </td>
 
-                <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 flex items-center gap-1">
-  <XCircleIcon className="h-4 w-4 text-white" />
-  End
-</button>
+        <td className="px-4 py-2">
+          <Link
+            href={`/offerregister/${index + 1}`}
+            className="bg-blue-500 text-white px-3 py-1 hover:bg-blue-600 flex items-center gap-2"
+          >
+            <PencilIcon className="h-5 w-5" /> Edit
+          </Link>
+        </td>
 
- 
-</td>
+        <td className="px-4 py-2">
+          <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 flex items-center gap-1">
+            <XCircleIcon className="h-4 w-4 text-white" />
+            End
+          </button>
+        </td>
+
+        <td className="px-4 py-2">
+          <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+            🗑
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="10" className="text-center text-gray-500 py-4">
+        {loading ? "Loading offers..." : "No offers found."}
+      </td>
+    </tr>
+  )}
+</tbody>
 
 
 
-                <td className="px-4 py-2">
-                  <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                    🗑
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+
+
+
+
+
+
+
+
+
           <tfoot className="bg-gray-50">
     <tr>
       <td colSpan="9" className="px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Left side: info text */}
           <span className="text-sm text-gray-600">
-            Showing 1 to {fakeOffers.length} of {fakeOffers.length} entries
-          </span>
+  {Array.isArray(offers) && offers.length > 0
+    ? `Showing 1 to ${offers.length} of ${offers.length} entries`
+    : loading
+    ? "Loading offers..."
+    : "No offers found."}
+</span>
+
+         
 
           {/* Right side: pagination buttons */}
           <div className="space-x-2">

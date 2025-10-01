@@ -8,59 +8,38 @@ import Link from "next/link";
  export default function PushNotificationTable(){
     const [pushData,setPushData] = useState([]);
 
-useEffect (()=>{
-    const fakeData = [
-        {
-          username: 'AI Quizon',
-          emailPhone: 'duty.wales@icloud.com/+9712678767667',
-          phone:'0',
-          title:'free delivery',
-          message:'no subscription',
-          date:'2/09/2025',
-      },
-      {
-        username: 'AI Quizon',
-        emailPhone: 'duty.wales@icloud.com/+9712678767667',
-        phone:'0',
-        title:'free delivery',
-        message:'no subscription',
-        date:'2/09/2025',
-    },
-    {
-        username: 'AI Quizon',
-        email: 'duty.wales@icloud.com/+9712678767667',
-        phone:'0',
-        title:'free delivery',
-        message:'no subscription',
-        date:'2/09/2025',
-    },
-    {
-        username: 'AI Quizon',
-        email: 'duty.wales@icloud.com/+9712678767667',
-        phone:'0',
-        title:'free delivery',
-        message:'no subscription',
-        date:'2/09/2025',
-    },
-    {
-        username: 'AI Quizon',
-        email: 'duty.wales@icloud.com/+9712678767667',
-        phone:'0',
-        title:'free delivery',
-        message:'no subscription',
-        date:'2/09/2025',
-    },
-    {
-        username: 'AI Quizon',
-        email: 'duty.wales@icloud.com/+9712678767667',
-        phone:'0',
-        title:'free delivery',
-        message:'no subscription',
-        date:'2/09/2025',
-    },
-];
-    setPushData(fakeData);
-},[]);
+    useEffect(() => {
+      async function fetchPushNotifications() {
+        try {
+          const response = await fetch('http://localhost:5000/api/notifications');
+          const result = await response.json();
+          if (result.success && Array.isArray(result.data)) {
+            // Map your API data fields to your UI fields
+            const formattedData = result.data.map(item => ({
+              username: item.userName || '',  // from userName in API
+              email: item.email || '',
+              phone: item.phone || '',
+              title: item.title || '',
+              message: item.message || '',
+              date: new Date(item.date).toLocaleDateString() || '', // Format date nicely
+            }));
+            setPushData(formattedData);
+          } else {
+            console.error('Unexpected API response format', result);
+          }
+        } catch (error) {
+          console.error('Failed to fetch push notifications:', error);
+        }
+      }
+  
+      fetchPushNotifications();
+    }, []);
+
+
+
+
+
+
 return(
 
     <div className="p-6 min-h-screen  bg-gray-40">

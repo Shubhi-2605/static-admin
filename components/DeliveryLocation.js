@@ -1,9 +1,48 @@
 "use client";
-import { useState } from "react";
-import { stores, deliveryZones } from "../data/stores";
+
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { MapContainer, TileLayer, Polygon, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
 export default function DeliveryLocation() {
-  const [selectedStore, setSelectedStore] = useState(null);
+  const [branches, setBranches] = useState([]);
+  const [selectedBranchId, setSelectedBranchId] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState(null);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/branches");
+        setBranches(res.data.branches || []);
+      } catch (err) {
+        console.error("Error fetching branches:", err.message);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
+  const handleBranchChange = async (e) => {
+    const id = e.target.value;
+    setSelectedBranchId(id);
+
+    if (id) {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/branches/${id}`);
+        setSelectedBranch(res.data.branch);
+      } catch (err) {
+        console.error("Error fetching branch data:", err.message);
+      }
+    } else {
+      setSelectedBranch(null);
+    }
+  };
+
+  const center = selectedBranch?.location?.coordinates
+    ? [selectedBranch.location.coordinates[1], selectedBranch.location.coordinates[0]]
+    : [20.5937, 78.9629]; // Default center (India)
 
   return (
     <div className="p-6 min-h-screen bg-neutral-100">
@@ -11,147 +50,106 @@ export default function DeliveryLocation() {
         Delivery Location Management
       </h1>
 
-      {/* Store Dropdown */}
-      <div className="relative mb-6">
-  {/* Centered Dropdown */}
-  <div className="flex justify-center">
-    <select
-      className="border rounded p-2 w-[500px]"
-      onChange={(e) => setSelectedStore(e.target.value)}
-    >
-      <option value="">Please enter the store...</option>
-      {stores.map((store) => (
-        <option key={store.id} value={store.id}>
-          {store.name}
-        </option>
-      ))}
-    </select>
-  </div>
+      {/* Dropdown */}
+      <div className="flex justify-center mb-6">
+        <select
+          className="border rounded p-2 w-[500px]"
+          onChange={handleBranchChange}
+          value={selectedBranchId}
+        >
+          <option value="">Select a Branch...</option>
+          {branches.map((branch) => (
+            <option key={branch._id} value={branch._id}>
+              {branch.branchName}
+            </option>
+          ))}
+        </select>
+      </div>
 
-  {/* Right-Aligned Button */}
-  <button className="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-200 px-4 py-2  hover:bg-gray-300">
-    Launch Example
-  </button>
-</div>
-
-
-
-      {/* Map + Form */}
-      {selectedStore && (
+      {/* Map and Form */}
+      {selectedBranch && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Fake Map */}
-          <div className="border border-white border-5 h-full flex items-center justify-center bg-gray-100">
-            <p className="text-gray-500">[Google Map Placeholder]</p>
+          {/* Map */}
+          <div className="border border-white h-[500px] bg-gray-100 shadow">
+            <MapContainer center={center} zoom={16} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              />
+
+              <Marker position={center}>
+                <Popup>{selectedBranch.branchName}</Popup>
+              </Marker>
+
+              {selectedBranch.stores?.map((store, index) =>
+                store.zones?.map((zone, idx) => (
+                  <Polygon
+                    key={`${index}-${idx}`}
+                    positions={zone.polygon.coordinates[0].map(([lng, lat]) => [lat, lng])}
+                    pathOptions={{ color: "blue" }}
+                  />
+                ))
+              )}
+            </MapContainer>
           </div>
 
           {/* Form */}
-          <div className="border border-white p-4">
-          
+          <div className="border border-white p-4 bg-white shadow">
+            <h2 className="text-lg font-semibold mb-4 text-center">Add New Delivery Zone</h2>
 
-
-          {/* Total Delivery Location Row */}
-<div className="flex justify-between items-center mb-4">
-  {/* Left: Label */}
-  <span className="text-lg">Total delivery location:</span>
-
-  {/* Center: Count */}
-  <span className=" text-lg">1</span>
-
-  {/* Right: Reload Button */}
-  <button className="text-sm px-3 py-1 mb-2 border rounded border-gray-600 bg-gray-100 hover:bg-gray-200">
-    Reload
-  </button>
-</div>
-
-            <h2 className="text-lg flex justify-center font-semibold mb-4">Add New Delivery Zone</h2>
             <form className="space-y-4">
-            
-            <div className="flex items-center mb-4">
-  <label className="w-1/2 text-lg">New Delivery Zone Name</label>
-  <input
-    type="text"
-    className="w-1/2 border rounded p-2 bg-white"
-  />
-</div>
-
-
-<div className="flex items-center mb-4">
-  <label className=" w-1/2 text-lg">Free Delivery Amount</label>
-  <input
-  type="text" className="w-1/2 bg-white border border-rounded p-2"
-/>
-</div>
-<div className="flex items-center mb-4">
-  <label className="w-1/2 text-lg">Minimun Amount for Order</label>
-  <input
-    type="text"
-    className="w-1/2 border rounded p-2 bg-white"
-  />
-</div>
-<div className="flex items-center mb-4">
-  <label className="w-1/2 text-lg">Delivery slot Time(In Minutes)</label>
-  <input
-    type="text"
-    className="w-1/2 border rounded p-2 bg-white"
-  />
-</div>
-
-
-
-          
-              <div className="flex gap-2">
-                <div className="text-lg w-1/2">Delivery Time (Start/End)</div>
-                <div className=" w-1/2  flex items-center gap-2">
-                <input type="time" className="border rounded bg-white p-2 w-1/2" />
-                <input type="time" className="border rounded bg-white p-2 w-1/2" />
-              </div>
+              <div>
+                <label className="block mb-1">New Delivery Zone Name</label>
+                <input type="text" className="w-full border rounded p-2" />
               </div>
 
-              <div className="flex items-center mb-4">
-  <label className="w-1/2 text-lg">Delivery Charge Per Kilometer</label>
-  <input
-    type="text"
-    className="w-1/2 border rounded p-2 bg-white"
-  />
-</div>
-<div className="flex items-center mb-4">
-  <label className="w-1/2 text-lg">Delivery Charge Applicable After kilometer</label>
-  <input
-    type="text"
-    className="w-1/2 border rounded p-2 bg-white"
-  />
-</div>
-
-
-
-
-
-
-           
-              <div className="flex items-center gap-4">
-                <div  className=" text-lg w-1/2">Payment Accepted By</div>
-               <div className="w-1/2 bg-white gap-2">
-                
-                 <label>
-                  Card <input type="checkbox" className="mr-1 font-semibold" /> 
-                </label>
-                <label>
-                  Online<input type="checkbox" className="mr-1 font-semibold" /> 
-                </label>
-                <label>
-                  Cash<input type="checkbox" className="mr-1 font-semibold" /> 
-                </label>
+              <div>
+                <label className="block mb-1">Free Delivery Amount</label>
+                <input type="text" className="w-full border rounded p-2" />
               </div>
-                  </div>
 
+              <div>
+                <label className="block mb-1">Minimum Order Value</label>
+                <input type="text" className="w-full border rounded p-2" />
+              </div>
 
+              <div>
+                <label className="block mb-1">Delivery Time Slot (in minutes)</label>
+                <input type="text" className="w-full border rounded p-2" />
+              </div>
 
+              <div className="flex gap-4">
+                <div className="w-1/2">
+                  <label className="block mb-1">Start Time</label>
+                  <input type="time" className="w-full border rounded p-2" />
+                </div>
+                <div className="w-1/2">
+                  <label className="block mb-1">End Time</label>
+                  <input type="time" className="w-full border rounded p-2" />
+                </div>
+              </div>
 
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded"
-              >
-                Save
+              <div>
+                <label className="block mb-1">Delivery Charge per KM</label>
+                <input type="text" className="w-full border rounded p-2" />
+              </div>
+
+              <div>
+                <label className="block mb-1">Delivery Charge After KM</label>
+                <input type="text" className="w-full border rounded p-2" />
+              </div>
+
+              <div>
+                <label className="block mb-2">Payment Methods</label>
+                <div className="flex gap-4">
+                  <label><input type="checkbox" className="mr-1" /> Card</label>
+                  <label><input type="checkbox" className="mr-1" /> Cash</label>
+                  <label><input type="checkbox" className="mr-1" /> UPI</label>
+                </div>
+              </div>
+
+              <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+                Save Zone
               </button>
             </form>
           </div>

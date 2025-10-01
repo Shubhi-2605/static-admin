@@ -10,35 +10,46 @@ import {PlayIcon,PencilIcon} from "@heroicons/react/24/solid";
     const[showModal,setShowModal] = useState(false);
     const[selectedRow,setSelectedRow] = useState(null)
 
-useEffect (()=>{
-    const fakeData = [
-        {
-          name: 'back to school 2 to 31st August 2025-wz.pdf',
-         
-      },
-      {
-        name: 'Indian Independence Day 15th to 19th August 2025.pdf',
-       
-    },
-    {
-        name: 'Summer Deals 8th to 12th August 2025.pdf ',
-        
-    },
-    {
-        name: 'AI Quizon.pdf',
-       
-    },
-    {
-        name: 'AI Quizon.pdf',
-       
-    },
-    {
-        name: 'AI Quizon.pdf',
-       
-    },
-];
-    setPdfData(fakeData);
-},[]);
+    useEffect(() => {
+      const fetchPdfData = async () => {
+        try {
+          const res = await fetch("http://localhost:5000/api/pdf-banners");
+          const json = await res.json();
+          if (json.success) {
+            setPdfData(json.data); // Use the data from the backend
+          } else {
+            console.error("Failed to fetch PDF banners");
+          }
+        } catch (error) {
+          console.error("Error fetching PDF banners:", error);
+        }
+      };
+    
+      fetchPdfData();
+    }, []);
+
+    const handleDelete = async (id) => {
+      if (!confirm("Are you sure you want to delete this PDF?")) return;
+    
+      try {
+        const res = await fetch(`http://localhost:5000/api/pdf-banners/${id}`, {
+          method: "DELETE",
+        });
+    
+        const result = await res.json();
+        if (result.success) {
+          // Remove the deleted item from the state
+          setPdfData((prev) => prev.filter((item) => item._id !== id));
+        } else {
+          alert("Failed to delete PDF");
+        }
+      } catch (err) {
+        console.error("Delete error:", err);
+      }
+    };
+    
+    
+
 return(
 
   <div className="p-6  bg-gray-100 min-h-screen">
@@ -93,57 +104,59 @@ return(
 
             </tr>
           </thead>
+
           <tbody>
-            {pdfData.map((item, idx) => (
-              <tr key={idx} className=" hover:bg-gray-100 odd:bg-gray-100 even:bg-gray-50 border-b border-gray-200 ">
-                <td className="px-4 py-2">{item.name}</td>
-               
-              
-              <td className="px-4 py-2">
-                <div className="flex justify-end gap-2">
-                <button
-                title="Promotion Info Edit"
-  onClick={() => {
-    setSelectedRow(item); // optional: pass data
-    setShowModal(true);
-  }}
-  className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 flex items-center text-sm"
+  {pdfData.map((item, idx) => (
+    <tr key={item._id || idx} className="...">
+      <td className="px-4 py-2">
+        <a
+          href={`http://localhost:5000${item.pdfUrl}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline"
+        >
+          {item.name}
+        </a>
+      </td>
+
+      <td className="px-4 py-2">
+        <div className="flex justify-end gap-2">
+          <button
+            title="Edit"
+            onClick={() => {
+              setSelectedRow(item);
+              setShowModal(true);
+            }}
+            className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 flex items-center text-sm"
+          >
+            <PencilIcon className="h-4 w-4 mr-1" />
+            Edit
+          </button>
+
+          <Link
+            href={`http://localhost:5000${item.pdfUrl}`}
+            target="_blank"
+            className="bg-green-500 text-white px-3 py-1 rounded flex items-center gap-2 hover:bg-green-600"
+          >
+            <PlayIcon className="h-4 w-4" />
+            Start
+          </Link>
+
+          <button
+  onClick={() => handleDelete(item._id)}
+  className="bg-red-500 text-white px-3 py-1 rounded flex items-center gap-2"
 >
-  <PencilIcon className="h-4 w-4  mr-1" />
-  Edit
+  <TrashIcon className="h-5 w-5 stroke-[3]" />
 </button>
 
 
-<Link
-  href="#"
-  title="Start Promotion"
-  className="bg-green-500 text-white px-3 py-1 rounded flex items-center gap-2 hover:bg-green-600"
->
-  <PlayIcon className="h-4 w-4" />
-  Start
-</Link>
+        
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
 
-                  
-
-<Link
-                   href={`#`} 
-                      className="bg-red-500 text-white px-3 py-1 rounded flex items-center gap-2 ">
-<TrashIcon className='h-5 w-5 stroke-[3]'/>
-
-</Link>
-
-
-
-</div>
-</td>
-
-
-
-
-
-              </tr>
-            ))}
-          </tbody>
 
 
 

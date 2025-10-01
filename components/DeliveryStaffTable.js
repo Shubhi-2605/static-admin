@@ -1,17 +1,35 @@
 'use client';
-
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import Link from "next/link"; 
 import { PencilIcon, TrashIcon,ArrowsUpDownIcon } from "@heroicons/react/24/solid";
-
 export default function DeliveryStaffTable() {
-  const fakePromotions = [
-    { name: 'ABBAS', surname: 'AHMED', phone: '87655667868' },
-    { name: 'Flash Friday', surname: 'deals', phone: '2025098710' },
-    { name: 'Bonanza', surname: 'discounts', phone: '20251225' },
-    { name: 'Clearance', surname: 'season', phone: '9820251015' },
-    { name: 'Diwali', surname: 'Festival', phone: '7720251101' },
-  ];
+  const [deliveryStaff, setDeliveryStaff] = useState([]);
+
+  useEffect(() => {
+    async function fetchDeliveryStaff() {
+      try {
+        const response = await fetch('http://localhost:5000/api/users/delivery-boys');
+        const result = await response.json();
+        if (result.status && result.data) {
+          const staffData = result.data.map(staff => ({
+            name: staff.name,
+            surname: staff.surname,
+            phone: staff.phone
+          }));
+          setDeliveryStaff(staffData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch delivery staff:', error);
+      }
+    }
+    fetchDeliveryStaff();
+  }, []);
+
+
+
+
+
+
 
   return (
     <div className="p-6 bg-gray-55 min-h-screen">
@@ -108,7 +126,7 @@ export default function DeliveryStaffTable() {
           </tr>
         </thead>
         <tbody>
-  {fakePromotions.map((promo, index) => (
+  {deliveryStaff.map((promo, index) => (
     <tr key={index} className="border-t border-gray-300 hover:bg-gray-50">
       <td className="px-4 py-2">{promo.name}</td>
       <td className="px-4 py-2">{promo.surname}</td>
@@ -145,7 +163,7 @@ export default function DeliveryStaffTable() {
               <div className="flex items-center justify-between">
                 {/* Info */}
                 <span className="text-sm text-gray-600">
-                  Showing 1 to {fakePromotions.length} of {fakePromotions.length} entries
+                  Showing 1 to {deliveryStaff.length} of {deliveryStaff.length} entries
                 </span>
                 {/* Pagination */}
                 <div className="space-x-2">

@@ -1,4 +1,5 @@
 // app/layout.js
+import "leaflet/dist/leaflet.css";
 
 import './globals.css';
 import Navbar from '../components/Navbar'; 

@@ -1,54 +1,125 @@
-"use client";
 
-import { useParams } from "next/navigation";
+ 
+ 
+ "use client";
+
+import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import{Percent,Tag,Gift} from "lucide-react";
- import{useRouter} from "next/navigation";
-
+import axios from "axios";
+import { Percent, Tag, Gift } from "lucide-react";
 
 export default function PromotionEditPage() {
   const { id } = useParams();
+  console.log("promotion Id from useParams")
+  const router = useRouter();
   const [promotion, setPromotion] = useState(null);
-const router = useRouter();
-
-
-const handleCancel = () => {
-  router.push("/promotions"); // 
-}
-
-
-
-
-
+  const [products,setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
 
 
   useEffect(() => {
-    const fakePromotion = {
-      id,
-      title: "Hurry In! Offers Picked Fresh",
-      description: "Fresh & Fabulous! 🍓🍇🍉🥑🍋🍊🥒🌶",
-      subtitle: "",
-      subDescription: "",
-      type: "Products",
-      image: "/sample.jpg",
-      startDate:"27.08.25",
-      endDate:"29.08.25"
-
+    // Fetch real products data from API
+    fetch("http://localhost:5000/api/products")
+      .then(res => res.json())
+      .then(data => {
+        setProducts(data.items || []);
+        setLoadingProducts(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch products:", err);
+      setLoadingProducts(false);
       
+      });
+  }, []);
+  
+  
+  
+  const handleCancel = () => {
+    router.push("/promotions");
+  };
+
+  useEffect(() => {
+    const fetchPromotion = async () => {
+      try {
+        const response = await axios.get(
+         
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/promotions/${id}`
+        
+        
+        );
+        setPromotion(response.data);
+      } catch (error) {
+        console.error("Failed to load promotion:", error);
+      }
     };
-    setPromotion(fakePromotion);
+
+    fetchPromotion();
   }, [id]);
 
   const handleChange = (e) => {
     setPromotion({ ...promotion, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Saving...", promotion);
-  };
 
-  if (!promotion) return <p>Loading...</p>;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const formData = new FormData();
+  
+      formData.append('title', promotion.title);
+      formData.append('description', promotion.description);
+      formData.append('subtitle', promotion.subtitle || '');
+      formData.append('subDescription', promotion.subDescription || '');
+      formData.append('type', promotion.type || '');
+      formData.append('startDate', promotion.startDate);
+      formData.append('endDate', promotion.endDate);
+      if (promotion.imageFile) {
+        formData.append('image', promotion.imageFile);
+      }
+  
+      await axios.put(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/promotions/${id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+  
+      alert("Promotion updated successfully!");
+      router.push("/promotions");
+    } catch (error) {
+      console.error("Update failed:", error);
+      alert("Failed to update promotion.");
+    }
+  };
+  
+
+
+
+  if (!promotion) return <p className="p-6">Loading...</p>;
+
+  // The rest of your form code remains 100% untouched 👇
+
+ 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    setPromotion((prev) => ({
+      ...prev,
+      imageFile: file, // this is the actual file to upload
+      imagePreview: URL.createObjectURL(file), // optional for preview
+    }));
+  };
+  
+ 
+ 
+ 
+ 
+ 
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -206,20 +277,24 @@ const handleCancel = () => {
     {/* Show data ONLY if Products radio is selected */}
     {promotion.type === "products" ? (
       <ul className="space-y-2">
-        {[
-          { id: 1, name: "Apple", price: "$2.00" },
-          { id: 2, name: "Banana", price: "$1.00" },
-          { id: 3, name: "Orange", price: "$1.50" },
-          { id: 4, name: "Grapes", price: "$3.20" },
-        ].map((item) => (
-          <li
-            key={item.id}
-            className="flex justify-between items-center p-2 border rounded hover:bg-gray-50"
-          >
-            <span>{item.name}</span>
-            <span className="text-gray-600">{item.price}</span>
-          </li>
-        ))}
+    
+    {products.length > 0 ? (
+  products.map((item) => (
+    <li key={item._id} className="flex justify-between items-center p-2 border rounded hover:bg-gray-50">
+      <span>{item.productName}</span>
+      <span className="text-gray-600">${(item.basePrice / 100).toFixed(2)}</span>
+    </li>
+  ))
+) : (
+  <p className="text-gray-400 italic">No products found.</p>
+)}
+
+
+
+
+
+
+
       </ul>
     ) : (
       <p className="text-gray-400 italic">Select "Products" promotion type to view products</p>
@@ -294,25 +369,23 @@ const handleCancel = () => {
 
     {/* Image Preview */}
     <img
-      src="/veg1.jpg"
+       src={promotion.imagePreview || "/veg1.jpg"}
       alt="Preview"
       className="w-full h-80 object-cover border-collapse rounded mb-2"
     />
 
     {/* File Input */}
     <input
-      type="file"
-      onChange={(e) =>
-        setPromotion({
-          ...promotion,
-          image: URL.createObjectURL(e.target.files[0]),
-        })
-      }
-      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-                 file:rounded-full file:border-0 file:text-sm file:font-semibold
-                 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-      required
-    />
+  type="file"
+  accept="image/*"
+  onChange={handleImageChange}
+  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+             file:rounded-full file:border-0 file:text-sm file:font-semibold
+             file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+/>
+
+
+
   </div>
 
   {/* Phone Mockup */}
@@ -322,7 +395,7 @@ const handleCancel = () => {
 
     {/* Image inside phone */}
     <img
-      src="/veg1.jpg"
+      src={promotion.imagePreview || "/veg1.jpg"}
       alt="Phone Preview"
       className="w-full h-3/4 object-cover"
     />

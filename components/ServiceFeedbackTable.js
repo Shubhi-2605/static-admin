@@ -7,25 +7,13 @@
 
 useEffect (()=>{
     const fakeData = [
-        {
-        name: 'AI Quizon',
-        emailPhone: 'duty.wales@icloud.com/+9712678767667',
-       branch:'AI sa adah-Zone1-Moroor 2 Abu dhabi',
-       comment:'contacting stores whatsapp has been proven to be useless   ' ,
-       reasonOfFeedback:'late Delivery',
-       serviceRating:'2',
-       qualityRating:'4',
-       deliveryRating : '2',
-       date:'2/09/2025',
-       orderId:'#CcC4erfu1z',
-       status:'pending',
+        
 
-
-        },
+        
 
         {
-          name: 'aryan',
-          emailPhone: 'ary@.com/+9712678767667',
+          name: 'Ai Quizon',
+          emailPhone: 'duty.waffles@.com/+9712678767667',
          branch:'AI sa ad2 Abu dhabi',
          comment:'whatsapp has been proven to be useless   ' ,
          reasonOfFeedback:'late Delivery',
@@ -34,56 +22,15 @@ useEffect (()=>{
          deliveryRating : '2',
          date:'5/09/2025',
          orderId:'#CcC345u1z',
-         status:'active',
+         status:'pending',
   
   
           },
-          {
-            name: 'beam',
-            emailPhone: 'bbream@.com/+9712678767667',
-           branch:'centrel perk',
-           comment:'contacting stores whatsapp has been proven to be useless   ' ,
-           reasonOfFeedback:'late Delivery',
-           serviceRating:'2',
-           qualityRating:'4',
-           deliveryRating : '2',
-           date:'3/09/2025',
-           orderId:'#CcC4erfu1z',
-           status:'pending',
-    
-    
-            },
-            {
-              name: 'chitra',
-              emailPhone: 'chitra@.com/+9712678767667',
-             branch:'urban clould volt',
-             comment:'contacting stores whatsapp has been proven to be useless   ' ,
-             reasonOfFeedback:'late Delivery',
-             serviceRating:'2',
-             qualityRating:'4',
-             deliveryRating : '2',
-             date:'6/09/2025',
-             orderId:'#ATYGUerfu1z',
-             status:'active',
-      
-      
-              },
-              {
-                name: 'diven',
-                emailPhone: 'duty.wales@icloud.com/+9712678767667',
-               branch:'kernel mussorie',
-               comment:'contacting stores whatsapp has been proven to be useless   ' ,
-               reasonOfFeedback:'late Delivery',
-               serviceRating:'2',
-               qualityRating:'4',
-               deliveryRating : '2',
-               date:'7/09/2025',
-               orderId:'#CcC4erfu1z',
-               status:'pending',
         
-        
-                },
-                    
+    
+           
+             
+      
 
 
 
@@ -155,7 +102,7 @@ return(
             {serviceData.map((item, idx) => (
               <tr key={idx} className="border-t border-gray-200 hover:bg-gray-50 odd:bg-gray-100">
                 <td className="px-4 py-2">{item.name}</td>
-                <td className="px-4 py-2">{item.emailPhone}</td>
+                <td className="px-4 py-2 text-blue-500">{item.emailPhone}</td>
                 <td className="px-4 py-2">{item.branch}</td>
                 <td className="px-4 py-2">{item.comment}</td>
                 <td className="px-4 py-2">{item.reasonOfFeedback }</td>

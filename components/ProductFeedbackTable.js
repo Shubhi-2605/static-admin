@@ -6,59 +6,9 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 useEffect (()=>{
     const fakeData = [
-        {
-
-        name: 'AI Quizon',
-        emailPhone: 'duty.wales@icloud.com/+9712678767667',
-       review:'Good quality and fair price',
-       rating:'4',
-       packingRating:'4',
-       qualityRating:'4',
-       productName:'ongs sesame oil    ',
-       price:'0',
-       barcode:'567678',
-       storeId:'west Zone',
-       reasonCode:'0',
-       status:'pending',
-       date:'30/08/2025    02:30',
-
-        },
-
-
-        {
-
-            name: 'bishnoi',
-            emailPhone: 'duty.wales@icloud.com/+9712678767667',
-           review:'average price',
-           rating:'2',
-           packingRating:'43',
-           qualityRating:'4',
-           productName:'ongs sesame oil    ',
-           price:'0',
-           barcode:'567678',
-           storeId:'west Zone',
-           reasonCode:'0',
-           status:'pending',
-           date:'30/08/2025    02:30',
-           
-            },
-            {
-
-                name: 'camela',
-                emailPhone: 'duty.wales@icloud.com/+9712678767667',
-               review:'Good quality and fair price',
-               rating:'4',
-               packingRating:'4',
-               qualityRating:'4',
-               productName:'ongs sesame oil    ',
-               price:'0',
-               barcode:'567678',
-               storeId:'west Zone',
-               reasonCode:'0',
-               status:'pending',
-               date:'30/08/2025    02:30',
-               
-                },
+     
+      
+     
                 {
 
                     name: 'dwarf',
@@ -76,23 +26,7 @@ useEffect (()=>{
                    date:'30/08/2025    02:30',
                    
                     },
-                    {
-
-                        name: 'ekam',
-                        emailPhone: 'duty.wales@icloud.com/+9712678767667',
-                       review:'Good quality and fair price',
-                       rating:'4',
-                       packingRating:'4',
-                       qualityRating:'4',
-                       productName:'ongs sesame oil    ',
-                       price:'0',
-                       barcode:'567678',
-                       storeId:'west Zone',
-                       reasonCode:'0',
-                       status:'pending',
-                       date:'30/08/2025    02:30',
-                       
-                        },
+                  
                                         
     ];
     setProductData(fakeData);
@@ -146,7 +80,7 @@ return(
             {productData.map((item, idx) => (
               <tr key={idx} className="border-t border-gray-200 odd:bg-gray-100 hover:bg-gray-50">
                 <td className="px-4 py-2">{item.name}</td>
-                <td className="px-4 py-2">{item.emailPhone}</td>
+                <td className="px-4 py-2 text-blue-500">{item.emailPhone}</td>
                 <td className="px-4 py-2">{item.review}</td>
                 <td className="px-4 py-2">{item.rating}</td>
                

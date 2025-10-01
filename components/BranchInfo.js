@@ -1,115 +1,92 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { UploadIcon,PlusIcon,X } from 'lucide-react';
 
+  
+  'use client';
+import React, { useState, useEffect } from 'react';
+import { UploadIcon, PlusIcon, X } from 'lucide-react';
 
 export default function BranchInfo() {
-  const branches = [
-    {
-      id: 'store1',
-      name: 'Discovery Garden - Building No. 08',
-      email: 'discover2@westzonefresh.com',
-      address: 'Zen Cluster, Discovery Garden',
-      phone: '+971547939580',
-      whatsapp: '97144494085',
-      lat: '25.04757',
-      lng: '55.13114',
-      isStoreOpen:true,
-      imageUrl:'',
-      deliveryStart: '11:00',
-      deliveryEnd: '21:00',
-    },
-    {
-      id: 'store2',
-      name: 'JLT Branch',
-      email: 'jlt@westzonefresh.com',
-      address: 'Jumeirah Lakes Towers',
-      phone: '+971500000000',
-      whatsapp: '971500000000',
-      lat: '25.10000',
-      lng: '55.20000',
-
-      isStoreOpen: false,
-      imageUrl: '',
-      deliveryStart: '08:00',
-      deliveryEnd: '23:00',
-    },
-  ];
-
-  const polygonsByBranch = {
-    store1: [
-      {
-        area: 'DG2 (Furjan)',
-        freeDelivery: 30,
-        minOrder: 30,
-        startTime: '11:00 AM',
-        endTime: '9:00 PM',
-        deliveryChargeK: 0,
-        deliveryChargeA: 15,
-
-
-      },
-    ],
-    store2: [
-      {
-        area: 'JLT Cluster B',
-        freeDelivery: 25,
-        minOrder: 20,
-        startTime: '9:00 AM',
-        endTime: '8:00 PM',
-
-        deliveryChargeK: 2,
-        deliveryChargeA: 10,
-      },
-    ],
-  };
+  // Raw backend data
+  const [branchDataRaw, setBranchDataRaw] = useState([]);
+  const [branches, setBranches] = useState([]); // for dropdown
+  const [loadingBranches, setLoadingBranches] = useState(true);
 
   const [branchTouched, setBranchTouched] = useState(false);
-  const [validationErrors, setValidationErrors] = useState({});
-  
   const [errors, setErrors] = useState({});
-
-  const [isStoreOpen, setIsStoreOpen] = useState(true);
-  const[branchData,setBranchData] = useState('')
   const [selectedBranchId, setSelectedBranchId] = useState('');
   const [formData, setFormData] = useState({
-
-    
     email: '',
     address: '',
     phone: '',
     whatsapp: '',
     lat: '',
     lng: '',
-    isStoreOpen:'',
-    imageUrl:'',
+    isStoreOpen: false,
+    imageUrl: '',
     deliveryStart: '',
     deliveryEnd: '',
   });
   const [polygonList, setPolygonList] = useState([]);
 
-  // Handle branch selection
-  const handleBranchChange = (e) => {
-    const branchId = e.target.value;
-    setSelectedBranchId(branchId);
+  // Fetch backend on mount
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/branches");
+        const json = await res.json();
+        if (json.status) {
+          setBranchDataRaw(json.branches);
 
-    const selected = branches.find((b) => b.id === branchId);
-    if (selected) {
-      setFormData({
-        email: selected.email,
-        address: selected.address,
-        phone: selected.phone,
-        whatsapp: selected.whatsapp,
-        lat: selected.lat,
-        lng: selected.lng,
-        isStoreOpen:selected.isStoreOpen,
-        imageUrl:selected.imageUrl,
-        deliveryStart: selected.deliveryStart,
-        deliveryEnd: selected.deliveryEnd,
-      });
-      setPolygonList(polygonsByBranch[branchId] || []);
-    } else {
-      // Reset if none
+          // Build dropdown options
+          const opts = json.branches.flatMap((b) =>
+            b.stores.map((store) => ({
+              // key for option
+              branchId: b._id,
+              storeId: store._id,
+              name: b.branchName,
+              address: b.address,
+              email: store.email,
+              phone: store.phone,
+              whatsapp: store.whatsapp_Number,
+              lat: b.location?.coordinates?.[1]?.toString() || '',
+              lng: b.location?.coordinates?.[0]?.toString() || '',
+              isStoreOpen: store.isOpen,
+              deliveryStart: store.openTime,
+              deliveryEnd: store.closeTime,
+            }))
+          );
+          setBranches(opts);
+        } else {
+          console.error("Branches fetch failed:", json);
+        }
+      } catch (err) {
+        console.error("Error fetching branches:", err);
+      } finally {
+        setLoadingBranches(false);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
+  const handleBranchChange = (e) => {
+    const storeId = e.target.value;
+    setBranchTouched(true);
+    setSelectedBranchId(storeId);
+
+    // Find the store in raw data
+    let selectedStore = null;
+    let parentBranch = null;
+    for (const branch of branchDataRaw) {
+      const st = branch.stores.find((s) => s._id === storeId);
+      if (st) {
+        selectedStore = st;
+        parentBranch = branch;
+        break;
+      }
+    }
+
+    if (!selectedStore || !parentBranch) {
+      // Reset if not found
       setFormData({
         email: '',
         address: '',
@@ -117,39 +94,98 @@ export default function BranchInfo() {
         whatsapp: '',
         lat: '',
         lng: '',
-
-        isStoreOpen:'',
-        imageUrl:'',
+        isStoreOpen: false,
+        imageUrl: '',
         deliveryStart: '',
         deliveryEnd: '',
       });
       setPolygonList([]);
+      return;
     }
+
+    // Populate formData
+    setFormData({
+      email: selectedStore.email,
+      address: parentBranch.address,
+      phone: selectedStore.phone,
+      whatsapp: selectedStore.whatsapp_Number,
+      lat: parentBranch.location.coordinates[1]?.toString() || '',
+      lng: parentBranch.location.coordinates[0]?.toString() || '',
+      isStoreOpen: selectedStore.isOpen,
+      imageUrl: '',
+      deliveryStart: selectedStore.openTime,
+      deliveryEnd: selectedStore.closeTime,
+    });
+
+    // Build polygonList from selectedStore.zones
+    const zones = selectedStore.zones || [];
+    const polygons = zones.map((zone) => ({
+      area: zone.name,
+      freeDelivery: zone.freeDeliveryAbove,
+      minOrder: zone.minOrderValue,
+      // Suppose deliveryTime is "30-45 mins"
+      startTime: zone.deliveryTime?.split('-')[0] || '',
+      endTime: zone.deliveryTime?.split('-')[1] || '',
+      deliveryChargeK: zone.deliveryChargeAfterKm,
+      deliveryChargeA: zone.deliveryCharge,
+    }));
+
+    setPolygonList(polygons);
   };
-
-  const inputClass = 'border border-gray-300 rounded px-3 py-2 w-full text-sm';
-
 
   const validateFields = () => {
     const newErrors = {};
-  
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     if (!formData.address.trim()) newErrors.address = 'Address is required';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
-    if (!formData.whatsapp.trim()) newErrors.whatsapp = 'WhatsApp number is required';
-    if (!formData.lat.trim()) newErrors.lat = 'Latitude is required';
-    if (!formData.lng.trim()) newErrors.lng = 'Longitude is required';
-    if (!formData.img.trim()) newErrors.img = 'Image is required';
-    if (!formData.start.trim()) newErrors.start = 'Delivery start time is required';
-    if (!formData.lng.trim()) newErrors.lng = 'Delivery End time is required';
-
+    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
+    if (!formData.whatsapp.trim()) newErrors.whatsapp = 'WhatsApp is required';
+    if (!formData.lat.trim()) newErrors.lat = 'Lat is required';
+    if (!formData.lng.trim()) newErrors.lng = 'Lng is required';
+    if (!formData.deliveryStart.trim()) newErrors.start = 'Start time is required';
+    if (!formData.deliveryEnd.trim()) newErrors.end = 'End time is required';
     setErrors(newErrors);
-  
     return Object.keys(newErrors).length === 0;
   };
+
+  const handleUpdate = async () => {
+    if (!validateFields()) return;
+
+    const payload = {
+      address: formData.address,
+      email: formData.email,
+      phone: formData.phone,
+      whatsapp_Number: formData.whatsapp,
+      isOpen: formData.isStoreOpen,
+      openTime: formData.deliveryStart,
+      closeTime: formData.deliveryEnd,
+      location: {
+        type: "Point",
+        coordinates: [parseFloat(formData.lng), parseFloat(formData.lat)],
+      },
+    };
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/branches/${selectedBranchId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+      const json = await res.json();
+      if (json.status) {
+        alert("Branch updated successfully!");
+      } else {
+        alert("Update failed");
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+      alert("Update error occurred");
+    }
+  };
+
   
-
-
 
 
 
@@ -191,19 +227,20 @@ export default function BranchInfo() {
     <label className="text-xl font-bold block mb-1">Branch
       <span className="text-red-500">*</span>
     </label>
+
+
+
     <select
       className="w-full text-gray-500 focus:outline-none"
       value={selectedBranchId}
       onChange={(e) => {
-        setSelectedBranchId(e.target.value);
-        setBranchTouched(true); // Mark touched on change
         handleBranchChange(e);
       }}
       onBlur={() => setBranchTouched(true)} // Mark touched on blur
     >
       <option value="">Please Enter the store...</option>
       {branches.map((b) => (
-        <option key={b.id} value={b.id}>
+        <option key={b.storeId} value={b.storeId}>
           {b.name}
         </option>
       ))}
@@ -452,15 +489,11 @@ export default function BranchInfo() {
         {/* Buttons */}
         <div className="flex gap-4">
 
-
         <button
   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
   onClick={(e) => {
     e.preventDefault();
-    if (validateFields()) {
-      // Submit logic goes here
-      alert("Form is valid and ready to submit!");
-    }
+    handleUpdate();  // 👈 this is the only change
   }}
 >
   Update
@@ -480,7 +513,7 @@ export default function BranchInfo() {
 {/**                              *******export excel */}
 
 
-{branchData && (
+{branchDataRaw.length && (
           <button className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">
             Export Excel
           </button>
